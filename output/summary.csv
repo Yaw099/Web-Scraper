@@ -1,0 +1,5 @@
+url,status,text_file,character_count
+https://www.ercot.com/committees/tac/llwg,success,output\www.ercot.com_committees_tac_llwg.txt,41092
+https://www.ercot.com/mktrules/issues/PGRR145,success,output\www.ercot.com_mktrules_issues_PGRR145.txt,54987
+https://www.ercot.com/mktrules/issues/NPRR1325,success,output\www.ercot.com_mktrules_issues_NPRR1325.txt,31408
+https://www.puc.texas.gov/agency/calendar/openmeetings/,success,output\www.puc.texas.gov_agency_calendar_openmeetings.txt,26531

@@ -1,0 +1,706 @@
+# Page Title
+NPRR1325 Issue
+
+# Headings
+- NPRR1325
+- Summary
+- Action
+- Voting Record
+- Background
+- Key Documents
+
+# Paragraphs
+Use of this site constitutes agreement to our Terms of Use .
+
+# Tables
+
+## Table 1
+Title | Related to PGRR145, Batch Zero Process for Large Load Interconnections
+Next Group | PUCT
+Next Step | PUCT for consideration
+Status | Pending
+
+## Table 2
+Date | Gov Body | Action Taken | Next Steps
+06/02/2026 | BOARD | Recommended for Approval | PUCT for consideration
+05/19/2026 | TAC | Recommended for Approval | Board for consideration
+05/13/2026 | TAC | Deferred/Tabled | TAC for consideration
+05/06/2026 | PRS | Recommended for Approval | TAC for consideration
+04/15/2026 | PRS | Deferred/Tabled | PRS for consideration
+
+## Table 3
+Date | Gov Body | Motion | Result
+06/02/2026 | BOARD | To recommend approval of NPRR1325 as recommended by TAC in the 5/19/26 TAC Report | Passed
+05/19/2026 | TAC | To recommend approval of NPRR1325 as recommended by PRS in the 5/6/26 PRS Report as amended by the 5/15/26 ERCOT comments | Passed
+05/13/2026 | TAC | To table NPRR1325 | Passed
+05/06/2026 | PRS | To grant NPRR1325 Urgent status; to recommend approval of NPRR1325 as amended by the 5/2/26 ERCOT comments; and to forward to TAC NPRR1325 and the 3/4/26 Impact Analysis | Passed
+04/15/2026 | PRS | To table NPRR1325 | Passed
+
+## Table 4
+Status: | Pending
+Date Posted: | Mar 4, 2026
+Sponsor: | ERCOT
+Urgent: | Yes
+Sections: | 2.1, 2.2, 3.2.5, 3.9.1, 3.10.7.3.1 (new), 3.11.4.3, 4.4.9.4, 4.4.9.4.4 (new), 6.5.7.3, 6.5.7.11, 16.5.5 (new), 23W (new), and 23X (new)
+Description: | This Nodal Protocol Revision Request (NPRR) defines essential terminology related to the transitional Large Load interconnection process, the Batch Zero Process, and modifies the Regional Planning Group procedures to allow for a new category of projects that result from the Batch Zero Process.
+Reason: | Strategic Plan Objective 1
+
+# Links
+- MIS LOG IN: https://www.ercot.com/mktrules/issues/NPRR1325#
+- About ERCOT: https://www.ercot.com/about
+- About ERCOT: https://www.ercot.com/about
+- Company Profile: https://www.ercot.com/about/profile
+- Vision and Mission: https://www.ercot.com/about/profile/vision
+- Community Involvement: https://www.ercot.com/about/profile/community
+- Governance: https://www.ercot.com/about/governance
+- Board of Directors: https://www.ercot.com/about/governance/directors
+- Executive Team: https://www.ercot.com/about/governance/executives
+- Membership: https://www.ercot.com/about/governance/members
+- Ethics: https://www.ercot.com/about/governance/ethics
+- Financial Information: https://www.ercot.com/about/governance/FinancialInformation
+- HB 4492 Securitization: https://www.ercot.com/about/hb4492securitization
+- Subchapter M Default Balance Securitization: https://www.ercot.com/about/hb4492securitization/subchapterm
+- Subchapter N Uplift Balance Securitization: https://www.ercot.com/about/hb4492securitization/subchaptern
+- Legal Policies and Notices: https://www.ercot.com/about/legal
+- Proposed Brazos and ERCOT Bankruptcy Settlement: https://www.ercot.com/about/legal/brazos
+- Board Ethics Agreements: https://www.ercot.com/about/legal/boardethicsagmts
+- Legal Notices: https://www.ercot.com/about/legal/legal_notices
+- February 2021 Extreme Weather Event: https://www.ercot.com/about/legal/february2021
+- January 24 and 25, 2026, DOE 202(c) Orders: https://www.ercot.com/about/legal/doe202c
+- Grid Research Innovation and Transformation: https://www.ercot.com/about/grit
+- Grid Transformation: https://www.ercot.com/about/grit/grid-transformation
+- Research and Innovation: https://www.ercot.com/about/grit/research-and-innovation
+- ERCOT Innovation Summit: https://www.ercot.com/about/grit/ercot-innovation-summit
+- News and Publications: https://www.ercot.com/about/news
+- Media Kit: https://www.ercot.com/about/news/mediakit
+- Helpful Resources: https://www.ercot.com/about/news/presentations
+- News Releases: https://www.ercot.com/about/news/releases
+- Trending Topics: https://www.ercot.com/about/news/trendingtopics
+- Grid Insights: https://www.ercot.com/about/news/grid-insights
+- Summer 2026: https://www.ercot.com/about/news/seasonal-updates
+- ERCOT Reliability Monitor Program: https://www.ercot.com/about/reliability-monitor
+- Careers: https://www.ercot.com/about/careers
+- Life at ERCOT: https://www.ercot.com/about/careers/culture
+- Development Programs: https://www.ercot.com/about/careers/programs
+- Internship Program: https://www.ercot.com/about/careers/ercotinternship
+- Procurement: https://www.ercot.com/about/procurement
+- Request for Proposal: https://www.ercot.com/about/procurement/rfp
+- Locations: https://www.ercot.com/about/locations
+- Contact Us: https://www.ercot.com/about/contact
+- Information Request: https://www.ercot.com/about/contact/inforequest
+- Services: https://www.ercot.com/services
+- Services: https://www.ercot.com/services
+- Client Services: https://www.ercot.com/services/client_svcs
+- Account Management: https://www.ercot.com/services/client_svcs/acctmgmt
+- Market Support: https://www.ercot.com/services/client_svcs/mktsupport
+- MarkeTrak Information: https://www.ercot.com/services/client_svcs/mktrk_info
+- Market Participant Communications: https://www.ercot.com/services/comm
+- Market Notice Archives: https://www.ercot.com/services/comm/archives
+- Operations Messages: https://www.ercot.com/services/comm/opsmessages
+- Power Operations Bulletins: https://www.ercot.com/services/comm/pobs
+- Public Notices: https://www.ercot.com/services/comm/notices
+- System Outage Notices: https://www.ercot.com/services/comm/outage_notices
+- Programs: https://www.ercot.com/services/programs
+- Demand Response: https://www.ercot.com/services/programs/load
+- Firm Fuel Supply Service: https://www.ercot.com/services/programs/firmfuelsupply
+- QSE Services Available on Short Notice: https://www.ercot.com/services/programs/qse
+- Renewable Energy Credit: https://www.ercot.com/services/programs/rec
+- Texas Cybersecurity Monitor Program: https://www.ercot.com/services/programs/tcmp
+- Projects: https://www.ercot.com/services/projects
+- Registration and Qualification: https://www.ercot.com/services/rq
+- Congestion Revenue Rights Account Holder: https://www.ercot.com/services/rq/crr
+- Credit: https://www.ercot.com/services/rq/credit
+- Independent Market Information System Registered Entity: https://www.ercot.com/services/rq/imre
+- Load Serving Entities: https://www.ercot.com/services/rq/lse
+- Qualified Scheduling Entities: https://www.ercot.com/services/rq/qse
+- Large Load Integration: https://www.ercot.com/services/rq/large-load-integration
+- Resource Entities: https://www.ercot.com/services/rq/re
+- Resource Integration: https://www.ercot.com/services/rq/integration
+- Transmission/Distribution Service Providers: https://www.ercot.com/services/rq/tdsp
+- Service Level Agreements: https://www.ercot.com/services/sla
+- Training: https://www.ercot.com/services/training
+- Course Catalog: https://www.ercot.com/services/training/courses
+- Course Recommendations: https://www.ercot.com/services/training/recommendations
+- ERCOT System Operator Certification Exam: https://www.ercot.com/services/training/exams
+- Market Data Transparency: https://www.ercot.com/services/mdt
+- DDLs: https://www.ercot.com/services/mdt/ddls
+- User Guides: https://www.ercot.com/services/mdt/userguides
+- Digital Certificate Security Information: https://www.ercot.com/services/mdt/webservices
+- XSDs: https://www.ercot.com/services/mdt/xsds
+- ERCOT Public API Applications: https://www.ercot.com/services/mdt/data-portal
+- Committees and Groups: https://www.ercot.com/committees
+- Committees and Groups: https://www.ercot.com/committees
+- Meeting Calendar: https://www.ercot.com/committees/calendar
+- PUCT: https://www.ercot.com/committees/puct
+- Board of Directors: https://www.ercot.com/committees/board
+- Finance and Audit Committee: https://www.ercot.com/committees/board/finance_audit
+- HR and Governance Committee: https://www.ercot.com/committees/board/hr_governance
+- Technology and Security Committee: https://www.ercot.com/committees/board/tech-security
+- Technical Advisory Committee: https://www.ercot.com/committees/tac
+- Large Load Working Group: https://www.ercot.com/committees/tac/llwg
+- Credit Finance Sub Group: https://www.ercot.com/committees/tac/cfsg
+- Protocol Revision Subcommittee: https://www.ercot.com/committees/prs
+- Protocol Revision Subcommittee: https://www.ercot.com/committees/prs/2025
+- Retail Market Subcommittee: https://www.ercot.com/committees/rms
+- Retail Market Training Task Force: https://www.ercot.com/committees/rms/rmttf
+- Texas Data Transport and MarkeTrak Systems Working Group: https://www.ercot.com/committees/rms/tdtms
+- Texas Standard Electronic Transaction/Load Profiling Working Group: https://www.ercot.com/committees/rms/txsetlp
+- Reliability and Operations Subcommittee: https://www.ercot.com/committees/ros
+- Black Start Working Group: https://www.ercot.com/committees/ros/bswg
+- Dynamics Working Group: https://www.ercot.com/committees/ros/dwg
+- Inverter-Based Resource Working Group: https://www.ercot.com/committees/ros/ibrwg
+- Meter Working Group: https://www.ercot.com/committees/ros/mwg
+- Network Data Support Working Group: https://www.ercot.com/committees/ros/ndswg
+- Operations Training Working Group: https://www.ercot.com/committees/ros/otwg
+- Operations Working Group: https://www.ercot.com/committees/ros/owg
+- Performance, Disturbance, Compliance Working Group: https://www.ercot.com/committees/ros/pdcwg
+- Planning Working Group: https://www.ercot.com/committees/ros/plwg
+- System Protection Working Group: https://www.ercot.com/committees/ros/spwg
+- Steady State Working Group: https://www.ercot.com/committees/ros/sswg
+- Voltage Profile Working Group: https://www.ercot.com/committees/ros/vpwg
+- Wholesale Market Subcommittee: https://www.ercot.com/committees/wms
+- Congestion Management Working Group: https://www.ercot.com/committees/wms/cmwg
+- Demand Side Working Group: https://www.ercot.com/committees/wms/dswg
+- Supply Analysis Working Group: https://www.ercot.com/committees/wms/sawg
+- Wholesale Market Working Group: https://www.ercot.com/committees/wms/wmwg
+- Inactive Groups: https://www.ercot.com/committees/inactive
+- Other Groups: https://www.ercot.com/committees/other
+- Workshops: https://www.ercot.com/committees/workshops
+- Market Participants: https://www.ercot.com/committees/mktparticipants
+- Market Rules: https://www.ercot.com/mktrules
+- Market Rules: https://www.ercot.com/mktrules
+- Protocols - Nodal: https://www.ercot.com/mktrules/nprotocols
+- Current Protocols - Nodal: https://www.ercot.com/mktrules/nprotocols/current
+- Protocol Library - Nodal: https://www.ercot.com/mktrules/nprotocols/library
+- Nodal Protocol Revision Requests: https://www.ercot.com/mktrules/nprotocols/nprr
+- NPRR Submission Process: https://www.ercot.com/mktrules/nprotocols/nprr_process
+- Protocol Interpretation Request Submission Process: https://www.ercot.com/mktrules/nprotocols/pir_process
+- Archives - Zonal: https://www.ercot.com/mktrules/protocols
+- PUCT Directives: https://www.ercot.com/mktrules/puctDirectives
+- Phase 2 Bridging Options: https://www.ercot.com/mktrules/puctDirectives/phase-2-bridging-options
+- Southern Cross Transmission: https://www.ercot.com/mktrules/puctDirectives/southernCross
+- Real-Time Co-Optimization: https://www.ercot.com/mktrules/puctDirectives/rtCoOptimization
+- Emergency Operations Plans: https://www.ercot.com/mktrules/puctDirectives/emergencyoperationsplans
+- Market Guides: https://www.ercot.com/mktrules/guides
+- Commercial Operations Market Guide: https://www.ercot.com/mktrules/guides/commercialops
+- Data Transport Guides: https://www.ercot.com/mktrules/guides/data_transport
+- Load Profiling Guide: https://www.ercot.com/mktrules/guides/loadprofiling
+- Nodal Operating Guide: https://www.ercot.com/mktrules/guides/noperating
+- Operating Procedures: https://www.ercot.com/mktrules/guides/procedures
+- Planning Guide: https://www.ercot.com/mktrules/guides/planning
+- Resource Registration Glossary: https://www.ercot.com/mktrules/guides/resourcereg
+- Retail Market Guide: https://www.ercot.com/mktrules/guides/retail
+- Settlement Metering Operating Guide: https://www.ercot.com/mktrules/guides/settlement
+- Texas Standard Electronic Transaction Guides: https://www.ercot.com/mktrules/guides/txset
+- Verifiable Cost Manual: https://www.ercot.com/mktrules/guides/vcm
+- Inactive Market Guides: https://www.ercot.com/mktrules/guides/archives
+- Pilot Projects: https://www.ercot.com/mktrules/pilots
+- Aggregate Distributed Energy Resource (ADER) Pilot Project: https://www.ercot.com/mktrules/pilots/ader
+- 30-Minute Emergency Response Service - Completed: https://www.ercot.com/mktrules/pilots/ers
+- Fast Responding Regulation Service - Completed: https://www.ercot.com/mktrules/pilots/frrs
+- Weather-Sensitive Emergency Response Service - Completed: https://www.ercot.com/mktrules/pilots/wsers
+- System Changes: https://www.ercot.com/mktrules/syschangereq
+- System Change Requests: https://www.ercot.com/mktrules/syschangereq/scr
+- Compliance in ERCOT: https://www.ercot.com/mktrules/compliance
+- Business Practice Manual: https://www.ercot.com/mktrules/bpm
+- Other Binding Documents: https://www.ercot.com/mktrules/obd
+- Other Binding Documents List: https://www.ercot.com/mktrules/obd/obdlist
+- Other Binding Documents Revision Requests: https://www.ercot.com/mktrules/obd/obdrr
+- Key Priorities: https://www.ercot.com/mktrules/keypriorities
+- Battery Energy Storage: https://www.ercot.com/mktrules/keypriorities/bes
+- Market Information: https://www.ercot.com/mktinfo
+- Market Information: https://www.ercot.com/mktinfo
+- Congestion Revenue Rights: https://www.ercot.com/mktinfo/crr
+- Day-Ahead Market: https://www.ercot.com/mktinfo/dam
+- Real-Time Market: https://www.ercot.com/mktinfo/rtm
+- Marginal Losses: https://www.ercot.com/mktinfo/rtm/marginallosses
+- Market Prices: https://www.ercot.com/mktinfo/prices
+- Retail: https://www.ercot.com/mktinfo/retail
+- Labeling of Electricity: https://www.ercot.com/mktinfo/retail/electric
+- Load Profiling: https://www.ercot.com/mktinfo/loadprofile
+- Backcasted (Actual) Load Profiles - Historical: https://www.ercot.com/mktinfo/loadprofile/alp
+- Metering: https://www.ercot.com/mktinfo/metering
+- Competitive Metering: https://www.ercot.com/mktinfo/metering/competitive
+- ERCOT-Polled Settlement Metering: https://www.ercot.com/mktinfo/metering/eps
+- TDSP Distribution Loss Factors - Methodology: https://www.ercot.com/mktinfo/metering/dlfmethodology
+- Data Aggregation: https://www.ercot.com/mktinfo/data_agg
+- IDR Protocol Compliance Verification - Historical: https://www.ercot.com/mktinfo/data_agg/idr_pcv
+- ERCOT Four Coincident Peak Calculations: https://www.ercot.com/mktinfo/data_agg/4cp
+- Shadow Settlement Instruction Guides: https://www.ercot.com/mktinfo/data_agg/ssig
+- UFE Analysis Reports: https://www.ercot.com/mktinfo/data_agg/ufe
+- Settlements: https://www.ercot.com/mktinfo/settlements
+- Market Reports: https://www.ercot.com/mktinfo/reports
+- Grid Information: https://www.ercot.com/gridinfo
+- Grid Information: https://www.ercot.com/gridinfo
+- Current System Conditions: https://www.ercot.com/gridinfo/csc
+- Generation: https://www.ercot.com/gridinfo/generation
+- Inverter Based Resources Integration Reports: https://www.ercot.com/gridinfo/generation/ibr-integration-reports
+- Load: https://www.ercot.com/gridinfo/load
+- Hourly Load Data Archives: https://www.ercot.com/gridinfo/load/load_hist
+- Supplemental Data for COVID-19 Scenario: https://www.ercot.com/gridinfo/load/covid-19-load-forecast
+- Load Forecast: https://www.ercot.com/gridinfo/load/forecast
+- Transmission: https://www.ercot.com/gridinfo/transmission
+- Production Load Schedule: https://www.ercot.com/gridinfo/transmission/opsys-change-schedule
+- Resource Adequacy: https://www.ercot.com/gridinfo/resource
+- Market Reports: https://www.ercot.com/gridinfo/sysplan
+- Planning: https://www.ercot.com/gridinfo/planning
+- Resiliency: https://www.ercot.com/gridinfo/resiliency
+- Winter Weather Readiness: https://www.ercot.com/gridinfo/resiliency/winterready
+- Summer Weather Readiness: https://www.ercot.com/gridinfo/resiliency/summerready
+- Gas-Electric Coordination: https://www.ercot.com/gridinfo/resiliency/gas-electric
+- Modeling: https://www.ercot.com/gridinfo/modeling
+- Market Participants: https://www.ercot.com/mp
+- Market Participants: https://www.ercot.com/mp
+- EMIL: https://www.ercot.com/mp/data-products
+- MIS Log In: https://www.ercot.com/mp/mis-ercot-com
+- RIOO Log In: https://www.ercot.com/mp/rioo-rs
+- Renewable Energy Credit: https://www.ercot.com/mp/rec
+- News Releases: https://www.ercot.com/news/releases
+- Grid and Market Conditions: https://www.ercot.com/gridmktinfo/dashboards
+- Home: https://www.ercot.com/
+- Market Rules: https://www.ercot.com/mktrules
+- Summary: https://www.ercot.com/mktrules/issues/NPRR1325#summary
+- Action: https://www.ercot.com/mktrules/issues/NPRR1325#action
+- Voting Record: https://www.ercot.com/mktrules/issues/NPRR1325#votingrecord
+- Background: https://www.ercot.com/mktrules/issues/NPRR1325#background
+- Key Documents: https://www.ercot.com/mktrules/issues/NPRR1325#keydocs
+- PUCT: https://www.ercot.com/widgets/committee?find=puct
+- 06/02/2026: https://www.ercot.com/calendar/06022026-Board-of-Directors-Meeting
+- BOARD: https://www.ercot.com/widgets/committee?find=board
+- Recommended for Approval: https://www.ercot.com/mktrules/issues/NPRR1325#votingrecord
+- 05/19/2026: https://www.ercot.com/calendar/05192026-TAC-Meeting
+- TAC: https://www.ercot.com/widgets/committee?find=tac
+- Recommended for Approval: https://www.ercot.com/mktrules/issues/NPRR1325#votingrecord
+- 05/13/2026: https://www.ercot.com/calendar/05132026-Special-TAC-Meeting
+- TAC: https://www.ercot.com/widgets/committee?find=tac
+- Deferred/Tabled: https://www.ercot.com/mktrules/issues/NPRR1325#votingrecord
+- 05/06/2026: https://www.ercot.com/calendar/05062026-PRS-Meeting
+- PRS: https://www.ercot.com/widgets/committee?find=prs
+- Recommended for Approval: https://www.ercot.com/mktrules/issues/NPRR1325#votingrecord
+- 04/15/2026: https://www.ercot.com/calendar/04152026-PRS-Meeting
+- PRS: https://www.ercot.com/widgets/committee?find=prs
+- Deferred/Tabled: https://www.ercot.com/mktrules/issues/NPRR1325#votingrecord
+- 06/02/2026: https://www.ercot.com/calendar/06022026-Board-of-Directors-Meeting
+- BOARD: https://www.ercot.com/widgets/committee?find=board
+- 05/19/2026: https://www.ercot.com/calendar/05192026-TAC-Meeting
+- TAC: https://www.ercot.com/widgets/committee?find=tac
+- 05/13/2026: https://www.ercot.com/calendar/05132026-Special-TAC-Meeting
+- TAC: https://www.ercot.com/widgets/committee?find=tac
+- 05/06/2026: https://www.ercot.com/calendar/05062026-PRS-Meeting
+- PRS: https://www.ercot.com/widgets/committee?find=prs
+- 04/15/2026: https://www.ercot.com/calendar/04152026-PRS-Meeting
+- PRS: https://www.ercot.com/widgets/committee?find=prs
+- 1325NPRR-01 Related to PGRR145, Batch Zero Process for Large Load Interconnections 030426: https://www.ercot.com/files/docs/2026/03/04/1325NPRR-01-Related-to-PGRR145-Batch-Zero-Process-for-Large-Load-Interconnections-030426.docx
+- 1325NPRR-02 Impact Analysis 030426: https://www.ercot.com/files/docs/2026/03/04/1325NPRR-02-Impact-Analysis-030426.docx
+- 1325NPRR-03 PRS Ballot 041526: https://www.ercot.com/files/docs/2026/04/20/1325NPRR-03-PRS-Ballot-041526.xls
+- 1325NPRR-04 PRS Report 041526: https://www.ercot.com/files/docs/2026/04/20/1325NPRR-04-PRS-Report-041526.docx
+- 1325NPRR-05 ERCOT Comments 041726: https://www.ercot.com/files/docs/2026/04/17/1325NPRR-05-ERCOT-Comments-041726.docx
+- 1325NPRR-06 ERCOT Comments 050126: https://www.ercot.com/files/docs/2026/05/01/1325NPRR-06-ERCOT-Comments-050126.docx
+- 1325NPRR-07 ERCOT Comments 050226: https://www.ercot.com/files/docs/2026/05/02/1325NPRR-07-ERCOT-Comments-050226.docx
+- 1325NPRR-08 Schaper Energy Consulting Comments 050526: https://www.ercot.com/files/docs/2026/05/05/1325NPRR-08-Schaper-Energy-Consulting-Comments-050526.docx
+- 1325NPRR-09 PRS Ballot 050626: https://www.ercot.com/files/docs/2026/05/06/1325NPRR-09-PRS-Ballot-050626.xls
+- 1325NPRR-10 PRS Report 050626: https://www.ercot.com/files/docs/2026/05/06/1325NPRR-10-PRS-Report-050626.docx
+- 1325NPRR-11 ERCOT Comments 051126: https://www.ercot.com/files/docs/2026/05/11/1325NPRR-11-ERCOT-Comments-051126.docx
+- 1325NPRR-12 TAC Ballot 051326: https://www.ercot.com/files/docs/2026/05/13/1325NPRR-12-TAC-Ballot-051326.xls
+- 1325NPRR-13 TAC Report 051326: https://www.ercot.com/files/docs/2026/05/13/1325NPRR-13-TAC-Report-051326.docx
+- 1325NPRR-14 ERCOT Comments 051526: https://www.ercot.com/files/docs/2026/05/15/1325NPRR-14-ERCOT-Comments-051526.docx
+- 1325NPRR-15 TAC Ballot 051926: https://www.ercot.com/files/docs/2026/05/20/1325NPRR-15-TAC-Ballot-051926.xls
+- 1325NPRR-16 TAC Report 051926: https://www.ercot.com/files/docs/2026/05/20/1325NPRR-16-TAC-Report-051926.docx
+- 1325NPRR-17 Board Report 060226: https://www.ercot.com/files/docs/2026/06/02/1325NPRR-17-Board-Report-060226.docx
+- Market Rules: https://www.ercot.com/mktrules
+- Nodal Protocol Revision Requests: https://www.ercot.com/mktrules/issues/nprr
+- About ERCOT: https://www.ercot.com/about
+- Services: https://www.ercot.com/services
+- Committees & Groups: https://www.ercot.com/committees
+- Market Rules: https://www.ercot.com/mktrules
+- Market Information: https://www.ercot.com/mktinfo
+- Grid Information: https://www.ercot.com/gridinfo
+- Market Participants: https://www.ercot.com/mp
+- Contact Us: https://www.ercot.com/about/contact
+- Glossary: https://www.ercot.com/glossary
+- Careers: https://www.ercot.com/careers
+- Locations: https://www.ercot.com/about/locations
+- Calendar: https://www.ercot.com/calendar
+- Ethics Point: https://www.ercot.com/about/governance/ethics
+- Operations Messages: https://www.ercot.com/services/comm/mkt_notices/opsmessages
+- Project Status: https://www.ercot.com/services/projects
+- Service Level Agreements: https://www.ercot.com/services/sla
+- MIS Applications: https://mis.ercot.com/secure/applications
+- Grid and Market Conditions: https://www.ercot.com/gridmktinfo/dashboards
+- ERCOT Market Information List: https://www.ercot.com/mp/data-products
+- Resource Integration & Ongoing Operations – Resource Services: https://sa.ercot.com/rioo-rs/
+- Texas Advisory and Notification System: https://www.ercot.com/txans?utm_source=navigation&utm_medium=footer&utm_campaign=txans&utm_term=txans-launch
+- Mailing Lists: https://lists.ercot.com
+- News & Publications: https://www.ercot.com/news
+- Terms of Use: https://www.ercot.com/help/terms
+- Sitemap: https://www.ercot.com/help/sitemap
+- Privacy: https://www.ercot.com/help/privacy
+
+# Full Visible Text
+NPRR1325 Issue
+MIS LOG IN
+About ERCOT
+About ERCOT
+Company Profile
+Vision and Mission
+Community Involvement
+Governance
+Board of Directors
+Executive Team
+Membership
+Ethics
+Financial Information
+HB 4492 Securitization
+Subchapter M Default Balance Securitization
+Subchapter N Uplift Balance Securitization
+Legal Policies and Notices
+Proposed Brazos and ERCOT Bankruptcy Settlement
+Board Ethics Agreements
+Legal Notices
+February 2021 Extreme Weather Event
+January 24 and 25, 2026, DOE 202(c) Orders
+Grid Research Innovation and Transformation
+Grid Transformation
+Research and Innovation
+ERCOT Innovation Summit
+News and Publications
+Media Kit
+Helpful Resources
+News Releases
+Trending Topics
+Grid Insights
+Summer 2026
+ERCOT Reliability Monitor Program
+Careers
+Life at ERCOT
+Development Programs
+Internship Program
+Procurement
+Request for Proposal
+Locations
+Contact Us
+Information Request
+Services
+Services
+Client Services
+Account Management
+Market Support
+MarkeTrak Information
+Market Participant Communications
+Market Notice Archives
+Operations Messages
+Power Operations Bulletins
+Public Notices
+System Outage Notices
+Programs
+Demand Response
+Firm Fuel Supply Service
+QSE Services Available on Short Notice
+Renewable Energy Credit
+Texas Cybersecurity Monitor Program
+Projects
+Registration and Qualification
+Congestion Revenue Rights Account Holder
+Credit
+Independent Market Information System Registered Entity
+Load Serving Entities
+Qualified Scheduling Entities
+Large Load Integration
+Resource Entities
+Resource Integration
+Transmission/Distribution Service Providers
+Service Level Agreements
+Training
+Course Catalog
+Course Recommendations
+ERCOT System Operator Certification Exam
+Market Data Transparency
+DDLs
+User Guides
+Digital Certificate Security Information
+XSDs
+ERCOT Public API Applications
+Committees and Groups
+Committees and Groups
+Meeting Calendar
+PUCT
+Board of Directors
+Finance and Audit Committee
+HR and Governance Committee
+Technology and Security Committee
+Technical Advisory Committee
+Large Load Working Group
+Credit Finance Sub Group
+Protocol Revision Subcommittee
+Protocol Revision Subcommittee
+Retail Market Subcommittee
+Retail Market Training Task Force
+Texas Data Transport and MarkeTrak Systems Working Group
+Texas Standard Electronic Transaction/Load Profiling Working Group
+Reliability and Operations Subcommittee
+Black Start Working Group
+Dynamics Working Group
+Inverter-Based Resource Working Group
+Meter Working Group
+Network Data Support Working Group
+Operations Training Working Group
+Operations Working Group
+Performance, Disturbance, Compliance Working Group
+Planning Working Group
+System Protection Working Group
+Steady State Working Group
+Voltage Profile Working Group
+Wholesale Market Subcommittee
+Congestion Management Working Group
+Demand Side Working Group
+Supply Analysis Working Group
+Wholesale Market Working Group
+Inactive Groups
+Other Groups
+Workshops
+Market Participants
+Market Rules
+Market Rules
+Protocols - Nodal
+Current Protocols - Nodal
+Protocol Library - Nodal
+Nodal Protocol Revision Requests
+NPRR Submission Process
+Protocol Interpretation Request Submission Process
+Archives - Zonal
+PUCT Directives
+Phase 2 Bridging Options
+Southern Cross Transmission
+Real-Time Co-Optimization
+Emergency Operations Plans
+Market Guides
+Commercial Operations Market Guide
+Data Transport Guides
+Load Profiling Guide
+Nodal Operating Guide
+Operating Procedures
+Planning Guide
+Resource Registration Glossary
+Retail Market Guide
+Settlement Metering Operating Guide
+Texas Standard Electronic Transaction Guides
+Verifiable Cost Manual
+Inactive Market Guides
+Pilot Projects
+Aggregate Distributed Energy Resource (ADER) Pilot Project
+30-Minute Emergency Response Service - Completed
+Fast Responding Regulation Service - Completed
+Weather-Sensitive Emergency Response Service - Completed
+System Changes
+System Change Requests
+Compliance in ERCOT
+Business Practice Manual
+Other Binding Documents
+Other Binding Documents List
+Other Binding Documents Revision Requests
+Key Priorities
+Battery Energy Storage
+Market Information
+Market Information
+Congestion Revenue Rights
+Day-Ahead Market
+Real-Time Market
+Marginal Losses
+Market Prices
+Retail
+Labeling of Electricity
+Load Profiling
+Backcasted (Actual) Load Profiles - Historical
+Metering
+Competitive Metering
+ERCOT-Polled Settlement Metering
+TDSP Distribution Loss Factors - Methodology
+Data Aggregation
+IDR Protocol Compliance Verification - Historical
+ERCOT Four Coincident Peak Calculations
+Shadow Settlement Instruction Guides
+UFE Analysis Reports
+Settlements
+Market Reports
+Grid Information
+Grid Information
+Current System Conditions
+Generation
+Inverter Based Resources Integration Reports
+Load
+Hourly Load Data Archives
+Supplemental Data for COVID-19 Scenario
+Load Forecast
+Transmission
+Production Load Schedule
+Resource Adequacy
+Market Reports
+Planning
+Resiliency
+Winter Weather Readiness
+Summer Weather Readiness
+Gas-Electric Coordination
+Modeling
+Market Participants
+Market Participants
+EMIL
+MIS Log In
+RIOO Log In
+Renewable Energy Credit
+News Releases
+Grid and Market Conditions
+Home
+Market Rules
+Issues
+NPRR1325
+Summary
+Action
+Voting Record
+Background
+Key Documents
+Summary
+Title
+Related to PGRR145, Batch Zero Process for Large Load Interconnections
+Next Group
+PUCT
+Next Step
+PUCT for consideration
+Status
+Pending
+Action
+Date
+Gov Body
+Action Taken
+Next Steps
+06/02/2026
+BOARD
+Recommended for Approval
+PUCT for consideration
+05/19/2026
+TAC
+Recommended for Approval
+Board for consideration
+05/13/2026
+TAC
+Deferred/Tabled
+TAC for consideration
+05/06/2026
+PRS
+Recommended for Approval
+TAC for consideration
+04/15/2026
+PRS
+Deferred/Tabled
+PRS for consideration
+Voting Record
+Date
+Gov Body
+Motion
+Result
+06/02/2026
+BOARD
+To recommend approval of NPRR1325 as recommended by TAC in the 5/19/26 TAC Report
+Passed
+05/19/2026
+TAC
+To recommend approval of NPRR1325 as recommended by PRS in the 5/6/26 PRS Report as amended by the 5/15/26 ERCOT comments
+Passed
+05/13/2026
+TAC
+To table NPRR1325
+Passed
+05/06/2026
+PRS
+To grant NPRR1325 Urgent status; to recommend approval of NPRR1325 as amended by the 5/2/26 ERCOT comments; and to forward to TAC NPRR1325 and the 3/4/26 Impact Analysis
+Passed
+04/15/2026
+PRS
+To table NPRR1325
+Passed
+Background
+Status:
+Pending
+Date Posted:
+Mar 4, 2026
+Sponsor:
+ERCOT
+Urgent:
+Yes
+Sections:
+2.1, 2.2, 3.2.5, 3.9.1, 3.10.7.3.1 (new), 3.11.4.3, 4.4.9.4, 4.4.9.4.4 (new), 6.5.7.3, 6.5.7.11, 16.5.5 (new), 23W (new), and 23X (new)
+Description:
+This Nodal Protocol Revision Request (NPRR) defines essential terminology related to the transitional Large Load interconnection process, the Batch Zero Process, and modifies the Regional Planning Group procedures to allow for a new category of projects that result from the Batch Zero Process.
+Reason:
+Strategic Plan Objective 1
+Key Documents
+1325NPRR-01 Related to PGRR145, Batch Zero Process for Large Load Interconnections 030426
+Mar 4, 2026 - docx - 56.3 KB
+1325NPRR-02 Impact Analysis 030426
+Mar 4, 2026 - docx - 31.8 KB
+1325NPRR-03 PRS Ballot 041526
+Apr 20, 2026 - xls - 140 KB
+1325NPRR-04 PRS Report 041526
+Apr 20, 2026 - docx - 57 KB
+1325NPRR-05 ERCOT Comments 041726
+Apr 17, 2026 - docx - 86.3 KB
+1325NPRR-06 ERCOT Comments 050126
+May 1, 2026 - docx - 92.9 KB
+1325NPRR-07 ERCOT Comments 050226
+May 2, 2026 - docx - 110.1 KB
+1325NPRR-08 Schaper Energy Consulting Comments 050526
+May 5, 2026 - docx - 107.4 KB
+1325NPRR-09 PRS Ballot 050626
+May 6, 2026 - xls - 141 KB
+1325NPRR-10 PRS Report 050626
+May 6, 2026 - docx - 110.3 KB
+1325NPRR-11 ERCOT Comments 051126
+May 11, 2026 - docx - 111 KB
+1325NPRR-12 TAC Ballot 051326
+May 13, 2026 - xls - 141 KB
+1325NPRR-13 TAC Report 051326
+May 13, 2026 - docx - 114.5 KB
+1325NPRR-14 ERCOT Comments 051526
+May 15, 2026 - docx - 114.5 KB
+1325NPRR-15 TAC Ballot 051926
+May 20, 2026 - xls - 141 KB
+1325NPRR-16 TAC Report 051926
+May 20, 2026 - docx - 120.6 KB
+1325NPRR-17 Board Report 060226
+Jun 2, 2026 - docx - 120.5 KB
+Related Content
+On this site
+Market Rules
+Nodal Protocol Revision Requests
+About ERCOT
+Services
+Committees & Groups
+Market Rules
+Market Information
+Grid Information
+Market Participants
+Contact Us
+Glossary
+Careers
+Locations
+Calendar
+Quick Links
+Ethics Point
+Operations Messages
+Project Status
+Service Level Agreements
+MIS Applications
+Grid and Market Conditions
+ERCOT Market Information List
+Resource Integration & Ongoing Operations – Resource Services
+Texas Advisory and Notification System
+STAY CONNECTED
+SOCIAL
+News & Press
+Mailing Lists
+News & Publications
+Use of this site constitutes agreement to our
+Terms of Use
+.
+© 1996-2026 Electric Reliability Council of Texas, Inc. All rights reserved.
+Sitemap
+Privacy
