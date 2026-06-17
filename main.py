@@ -9,7 +9,6 @@ from playwright.sync_api import sync_playwright
 
 INPUT_FILE = "urls.csv"
 OUTPUT_DIR = "output"
-VIDEO_OUTPUT_DIR = "videos"
 
 def extract_structured_content(html: str, url: str) -> str:
     soup = BeautifulSoup(html, "lxml")
@@ -57,26 +56,6 @@ def extract_structured_content(html: str, url: str) -> str:
 
     return "\n".join(lines)
 
-def download_video(url: str) -> str | None:
-    os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)
-
-    command = [
-        "py",
-        "-m",
-        "yt_dlp",
-        "--output",
-        os.path.join(VIDEO_OUTPUT_DIR, "%(title)s.%(ext)s"),
-        url
-    ]
-
-    try:
-        print(f"Downloading video: {url}")
-        subprocess.run(command, check=True)
-        return "downloaded"
-    except subprocess.CalledProcessError as e:
-        print(f"Failed to download video {url}: {e}")
-        return None
-    
 
 def download_audio_temp(url: str) -> str | None:
     temp_dir = tempfile.mkdtemp()
@@ -87,7 +66,8 @@ def download_audio_temp(url: str) -> str | None:
         "py",
         "-m",
         "yt_dlp",
-        "-x",
+        "--playlist-items", "1",
+        "--extract-audio",
         "--audio-format", "mp3",
         "--audio-quality", "5",
         "--output", output_template,
@@ -98,13 +78,14 @@ def download_audio_temp(url: str) -> str | None:
         subprocess.run(command, check=True)
 
         for filename in os.listdir(temp_dir):
-            if filename.endswith(".mp3"):
+            if filename.endswith((".mp3", ".m4a", ".wav")):
                 return os.path.join(temp_dir, filename)
 
         return None
 
     except subprocess.CalledProcessError as e:
         print(f"Audio download failed: {e}")
+        shutil.rmtree(temp_dir, ignore_errors=True)
         return None
 
 
@@ -115,7 +96,17 @@ def is_video_page(url: str) -> bool:
 def safe_filename(url: str) -> str:
     parsed = urlparse(url)
     name = parsed.netloc + parsed.path
-    name = name.strip("/").replace("/", "_").replace(":", "_")
+    if parsed.query:
+        name += "_" + parsed.query
+
+    name = (
+        name.strip("/")
+        .replace("/", "_")
+        .replace(":", "_")
+        .replace("?", "_")
+        .replace("&", "_")
+        .replace("=", "_")
+    )
     return name or "page"
 
 
@@ -135,8 +126,15 @@ def fetch_html(url: str) -> str | None:
 
 def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
+    DOWNLOAD_AUDIO = True
 
     urls = pd.read_csv(INPUT_FILE)
+
+    TEST_MODE = True
+    MAX_URLS = 1
+
+    if TEST_MODE:
+        urls = urls.head(MAX_URLS)
 
     results = []
 
@@ -167,7 +165,7 @@ def main():
         transcript_status = ""
 
         # Only do this for AdminMonitor pages
-        if is_video_page(url):
+        if DOWNLOAD_AUDIO and is_video_page(url):
 
             audio_path = download_audio_temp(url)
 
