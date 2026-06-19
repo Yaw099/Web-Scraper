@@ -1,14 +1,23 @@
+import sys
+
+print("Python executable:")
+print(sys.executable)
+print()
+
 import os
 import pandas as pd
 from bs4 import BeautifulSoup
 import subprocess
 import tempfile
 import shutil
+from faster_whisper import WhisperModel
 from urllib.parse import urljoin, urlparse
 from playwright.sync_api import sync_playwright
 
 INPUT_FILE = "urls.csv"
 OUTPUT_DIR = "output"
+TRANSCRIPT_OUTPUT_DIR = "transcripts"
+TRANSCRIPTION_PROVIDER = "none"  # Placeholder for future transcription provider
 
 def extract_structured_content(html: str, url: str) -> str:
     soup = BeautifulSoup(html, "lxml")
@@ -123,6 +132,28 @@ def fetch_html(url: str) -> str | None:
         print(f"Failed to fetch {url}: {e}")
         return None
 
+def transcribe(audio_path: str) -> str:
+    model = WhisperModel("tiny", device="cpu", compute_type="int8")
+
+    segments, info = model.transcribe(audio_path)
+
+    lines = []
+    for segment in segments:
+        lines.append(f"[{segment.start:.2f} - {segment.end:.2f}] {segment.text.strip()}")
+
+    return "\n".join(lines)
+
+def save_transcript(text: str, url: str) -> str:
+    os.makedirs(TRANSCRIPT_OUTPUT_DIR, exist_ok=True)
+
+    filename = safe_filename(url) + ".txt"
+    filepath = os.path.join(TRANSCRIPT_OUTPUT_DIR, filename)
+
+    with open(filepath, "w", encoding="utf-8") as f:
+        f.write(text)
+
+    return filepath
+
 
 def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -174,15 +205,9 @@ def main():
                 try:
                     print(f"Downloaded audio to {audio_path}")
 
-                    #
-                    # TRANSCRIPTION WILL GO HERE LATER
-                    #
-                    # transcript = transcribe(audio_path)
-                    #
-                    # save_transcript(transcript, url)
-                    #
-
-                    transcript_status = "ready_for_transcription"
+                    transcript = transcribe(audio_path)
+                    transcript_file = save_transcript(transcript, url)
+                    transcript_status = "transcribed"
 
                 finally:
                     shutil.rmtree(os.path.dirname(audio_path))
