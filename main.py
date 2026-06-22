@@ -1,232 +1,87 @@
 import sys
 
-print("Python executable:")
-print(sys.executable)
-print()
-
-import os
-import pandas as pd
-from bs4 import BeautifulSoup
-import subprocess
-import tempfile
-import shutil
-from faster_whisper import WhisperModel
-from urllib.parse import urljoin, urlparse
-from playwright.sync_api import sync_playwright
-
-INPUT_FILE = "urls.csv"
-OUTPUT_DIR = "output"
-TRANSCRIPT_OUTPUT_DIR = "transcripts"
-TRANSCRIPTION_PROVIDER = "none"  # Placeholder for future transcription provider
-
-def extract_structured_content(html: str, url: str) -> str:
-    soup = BeautifulSoup(html, "lxml")
-
-    for tag in soup(["script", "style", "noscript", "svg"]):
-        tag.decompose()
-
-    lines = []
-
-    title = soup.find("title")
-    if title:
-        lines.append(f"# Page Title\n{title.get_text(strip=True)}\n")
-
-    lines.append("# Headings")
-    for h in soup.find_all(["h1", "h2", "h3", "h4"]):
-        text = h.get_text(" ", strip=True)
-        if text:
-            lines.append(f"- {text}")
-
-    lines.append("\n# Paragraphs")
-    for p in soup.find_all("p"):
-        text = p.get_text(" ", strip=True)
-        if text:
-            lines.append(text)
-
-    lines.append("\n# Tables")
-    for i, table in enumerate(soup.find_all("table"), start=1):
-        lines.append(f"\n## Table {i}")
-        for row in table.find_all("tr"):
-            cells = row.find_all(["th", "td"])
-            values = [cell.get_text(" ", strip=True) for cell in cells]
-            if values:
-                lines.append(" | ".join(values))
-
-    lines.append("\n# Links")
-    for a in soup.find_all("a", href=True):
-        text = a.get_text(" ", strip=True)
-        href = urljoin(url, a["href"])
-        if text:
-            lines.append(f"- {text}: {href}")
-
-    lines.append("\n# Full Visible Text")
-    body_text = soup.get_text("\n", strip=True)
-    lines.append(body_text)
-
-    return "\n".join(lines)
+from analyze import transcribe
+from clean import extract_structured_content
+from fetch import cleanup_temp_file, download_audio_temp, fetch_html, is_video_page
+from reports import load_urls, save_summary
+from settings import (
+    DOWNLOAD_AUDIO,
+    INPUT_FILE,
+    MAX_URLS,
+    OUTPUT_DIR,
+    SUMMARY_FILENAME,
+    TEST_MODE,
+    TRANSCRIPT_OUTPUT_DIR,
+)
+from storage import ensure_directories, save_text
 
 
-def download_audio_temp(url: str) -> str | None:
-    temp_dir = tempfile.mkdtemp()
+def process_url(url: str) -> dict:
+    print(f"Processing: {url}")
 
-    output_template = os.path.join(temp_dir, "%(id)s.%(ext)s")
+    html = fetch_html(url)
 
-    command = [
-        "py",
-        "-m",
-        "yt_dlp",
-        "--playlist-items", "1",
-        "--extract-audio",
-        "--audio-format", "mp3",
-        "--audio-quality", "5",
-        "--output", output_template,
-        url
-    ]
+    if not html:
+        return {
+            "url": url,
+            "status": "failed",
+            "text_file": "",
+            "character_count": 0,
+            "transcript_status": "",
+            "transcript_file": "",
+        }
 
-    try:
-        subprocess.run(command, check=True)
+    print(f"Downloaded {len(html):,} characters")
 
-        for filename in os.listdir(temp_dir):
-            if filename.endswith((".mp3", ".m4a", ".wav")):
-                return os.path.join(temp_dir, filename)
+    text = extract_structured_content(html, url)
+    text_file = save_text(text, url, OUTPUT_DIR)
 
-        return None
+    transcript_status = ""
+    transcript_file = ""
 
-    except subprocess.CalledProcessError as e:
-        print(f"Audio download failed: {e}")
-        shutil.rmtree(temp_dir, ignore_errors=True)
-        return None
+    if DOWNLOAD_AUDIO and is_video_page(url):
+        audio_path = download_audio_temp(url)
 
+        if audio_path:
+            try:
+                print(f"Downloaded audio to {audio_path}")
+                transcript = transcribe(audio_path)
+                transcript_file = save_text(transcript, url, TRANSCRIPT_OUTPUT_DIR)
+                transcript_status = "transcribed"
+            except Exception as error:
+                print(f"Transcription failed: {error}")
+                transcript_status = "transcription_failed"
+            finally:
+                cleanup_temp_file(audio_path)
+                print("Deleted temporary audio")
+        else:
+            transcript_status = "audio_download_failed"
 
-def is_video_page(url: str) -> bool:
-    return "adminmonitor.com" in url.lower()
-
-
-def safe_filename(url: str) -> str:
-    parsed = urlparse(url)
-    name = parsed.netloc + parsed.path
-    if parsed.query:
-        name += "_" + parsed.query
-
-    name = (
-        name.strip("/")
-        .replace("/", "_")
-        .replace(":", "_")
-        .replace("?", "_")
-        .replace("&", "_")
-        .replace("=", "_")
-    )
-    return name or "page"
+    return {
+        "url": url,
+        "status": "success",
+        "text_file": text_file,
+        "character_count": len(text),
+        "transcript_status": transcript_status,
+        "transcript_file": transcript_file,
+    }
 
 
-def fetch_html(url: str) -> str | None:
-    try:
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            page = browser.new_page(ignore_https_errors=True)
-            page.goto(url, wait_until="networkidle", timeout=60000)
-            html = page.content()
-            browser.close()
-            return html
-    except Exception as e:
-        print(f"Failed to fetch {url}: {e}")
-        return None
+def main() -> None:
+    print("Python executable:")
+    print(sys.executable)
+    print()
 
-def transcribe(audio_path: str) -> str:
-    model = WhisperModel("tiny", device="cpu", compute_type="int8")
+    ensure_directories(OUTPUT_DIR, TRANSCRIPT_OUTPUT_DIR)
 
-    segments, info = model.transcribe(audio_path)
-
-    lines = []
-    for segment in segments:
-        lines.append(f"[{segment.start:.2f} - {segment.end:.2f}] {segment.text.strip()}")
-
-    return "\n".join(lines)
-
-def save_transcript(text: str, url: str) -> str:
-    os.makedirs(TRANSCRIPT_OUTPUT_DIR, exist_ok=True)
-
-    filename = safe_filename(url) + ".txt"
-    filepath = os.path.join(TRANSCRIPT_OUTPUT_DIR, filename)
-
-    with open(filepath, "w", encoding="utf-8") as f:
-        f.write(text)
-
-    return filepath
-
-
-def main():
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    DOWNLOAD_AUDIO = True
-
-    urls = pd.read_csv(INPUT_FILE)
-
-    TEST_MODE = True
-    MAX_URLS = 1
-
-    if TEST_MODE:
-        urls = urls.head(MAX_URLS)
+    urls = load_urls(INPUT_FILE, test_mode=TEST_MODE, max_urls=MAX_URLS)
 
     results = []
-
     for _, row in urls.iterrows():
-        url = row["url"]
-        print(f"Processing: {url}")
+        results.append(process_url(row["url"]))
 
-        html = fetch_html(url)
-
-        if not html:
-            results.append({
-                "url": url,
-                "status": "failed",
-                "text_file": ""
-            })
-            continue
-
-        print(f"Downloaded {len(html):,} characters")
-
-        text = extract_structured_content(html, url)
-        filename = safe_filename(url) + ".txt"
-        filepath = os.path.join(OUTPUT_DIR, filename)
-
-        with open(filepath, "w", encoding="utf-8") as f:
-            f.write(text)
-
-        
-        transcript_status = ""
-
-        # Only do this for AdminMonitor pages
-        if DOWNLOAD_AUDIO and is_video_page(url):
-
-            audio_path = download_audio_temp(url)
-
-            if audio_path:
-
-                try:
-                    print(f"Downloaded audio to {audio_path}")
-
-                    transcript = transcribe(audio_path)
-                    transcript_file = save_transcript(transcript, url)
-                    transcript_status = "transcribed"
-
-                finally:
-                    shutil.rmtree(os.path.dirname(audio_path))
-                    print("Deleted temporary audio")
-
-            else:
-                transcript_status = "audio_download_failed"
-
-        results.append({
-            "url": url,
-            "status": "success",
-            "text_file": filepath,
-            "character_count": len(text),
-            "transcript_status": transcript_status
-        })
-
-
-    pd.DataFrame(results).to_csv(os.path.join(OUTPUT_DIR, "summary.csv"), index=False)
-    print("Done. Check the output folder.")
+    summary_file = save_summary(results, OUTPUT_DIR, SUMMARY_FILENAME)
+    print(f"Done. Summary saved to {summary_file}")
 
 
 if __name__ == "__main__":
