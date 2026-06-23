@@ -2,6 +2,18 @@ import os
 
 import pandas as pd
 
+SUMMARY_COLUMNS = [
+    "url",
+    "status",
+    "text_file",
+    "character_count",
+    "transcript_status",
+    "transcript_file",
+    "analysis_status",
+    "analysis_file",
+    "analysis_character_count",
+    "chunks_used",
+]
 
 def load_urls(input_file: str, test_mode: bool = False, max_urls: int | None = None) -> pd.DataFrame:
     urls = pd.read_csv(input_file)
@@ -15,8 +27,18 @@ def load_urls(input_file: str, test_mode: bool = False, max_urls: int | None = N
     return urls
 
 
-def save_summary(results: list[dict], output_dir: str, filename: str = "summary.csv") -> str:
+def save_summary(results, output_dir, filename):
     os.makedirs(output_dir, exist_ok=True)
-    filepath = os.path.join(output_dir, filename)
-    pd.DataFrame(results).to_csv(filepath, index=False)
-    return filepath
+
+    df = pd.DataFrame(results)
+
+    for column in SUMMARY_COLUMNS:
+        if column not in df.columns:
+            df[column] = ""
+
+    df = df[SUMMARY_COLUMNS]
+
+    summary_path = os.path.join(output_dir, filename)
+    df.to_csv(summary_path, index=False)
+
+    return summary_path

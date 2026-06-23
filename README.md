@@ -9,3 +9,16 @@ URL list
 -  → save to SQLite
 -  → generate summary/report/search index
 
+
+
+# Regulatory Web Scraper
+
+Desktop tool for collecting regulatory webpage content, downloading/transcribing meeting audio, and generating Claude-based analysis reports.
+
+## Setup
+
+Install dependencies:
+
+```bash
+py -m pip install -r requirements.txt
+playwright install

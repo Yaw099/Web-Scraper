@@ -1,0 +1,8 @@
+pandas
+beautifulsoup4
+lxml
+playwright
+yt-dlp
+faster-whisper
+anthropic
+python-dotenv

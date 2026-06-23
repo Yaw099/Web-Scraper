@@ -14,9 +14,10 @@ from settings import (
     TRANSCRIPT_OUTPUT_DIR,
 )
 from storage import ensure_directories, save_text
+from claude_analysis import analyze_text_file
 
 
-def process_url(url: str) -> dict:
+def process_url(url: str, download_audio: bool) -> dict:
     print(f"Processing: {url}")
 
     html = fetch_html(url)
@@ -29,6 +30,10 @@ def process_url(url: str) -> dict:
             "character_count": 0,
             "transcript_status": "",
             "transcript_file": "",
+            "analysis_status": "",
+            "analysis_file": "",
+            "analysis_character_count": 0,
+            "chunks_used": 0,
         }
 
     print(f"Downloaded {len(html):,} characters")
@@ -39,7 +44,7 @@ def process_url(url: str) -> dict:
     transcript_status = ""
     transcript_file = ""
 
-    if DOWNLOAD_AUDIO and is_video_page(url):
+    if download_audio and is_video_page(url):
         audio_path = download_audio_temp(url)
 
         if audio_path:
@@ -67,22 +72,24 @@ def process_url(url: str) -> dict:
     }
 
 
-def main() -> None:
+def main(input_file="urls.csv", test_mode=True, download_audio=True) -> None:
     print("Python executable:")
     print(sys.executable)
     print()
 
     ensure_directories(OUTPUT_DIR, TRANSCRIPT_OUTPUT_DIR)
 
-    urls = load_urls(INPUT_FILE, test_mode=TEST_MODE, max_urls=MAX_URLS)
+    urls = load_urls(input_file, test_mode=test_mode, max_urls=MAX_URLS)
 
     results = []
     for _, row in urls.iterrows():
-        results.append(process_url(row["url"]))
+        results.append(process_url(row["url"], download_audio))
 
     summary_file = save_summary(results, OUTPUT_DIR, SUMMARY_FILENAME)
     print(f"Done. Summary saved to {summary_file}")
 
+    result = analyze_text_file("output/example_file.txt")
+    print(result)
 
 if __name__ == "__main__":
     main()
