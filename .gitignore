@@ -157,6 +157,12 @@ ENV/
 env.bak/
 venv.bak/
 
+# Generated output
+output/
+transcripts/
+analysis/
+videos/
+
 # Spyder project settings
 .spyderproject
 .spyproject

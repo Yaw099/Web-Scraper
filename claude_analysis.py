@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from anthropic import Anthropic
 from dotenv import load_dotenv
-from settings import ANTHROPIC_MODEL, ANTHROPIC_MAX_TOKENS
+from settings import ANTHROPIC_MODEL, ANTHROPIC_MAX_TOKENS, ANALYSIS_OUTPUT_DIR
 
 load_dotenv()
 

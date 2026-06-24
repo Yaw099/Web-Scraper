@@ -42,3 +42,33 @@ def save_summary(results, output_dir, filename):
     df.to_csv(summary_path, index=False)
 
     return summary_path
+
+
+def save_discovered_meetings(discovered_rows, output_dir):
+    import os
+    import pandas as pd
+
+    os.makedirs(output_dir, exist_ok=True)
+
+    filepath = os.path.join(output_dir, "discovered_meetings.csv")
+
+    if not discovered_rows:
+        return filepath
+
+    df = pd.DataFrame(discovered_rows)
+
+    columns = [
+        "source_url",
+        "meeting_url",
+        "status",
+        "transcript_file",
+    ]
+
+    for column in columns:
+        if column not in df.columns:
+            df[column] = ""
+
+    df = df[columns]
+    df.to_csv(filepath, index=False)
+
+    return filepath

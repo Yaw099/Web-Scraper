@@ -5,4 +5,14 @@ playwright
 yt-dlp
 faster-whisper
 anthropic
+python-dotenvpandas
+beautifulsoup4
+lxml
+playwright
+yt-dlp
+faster-whisper
+anthropic
 python-dotenv
+
+requests
+openpyxl

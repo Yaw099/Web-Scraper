@@ -3,7 +3,7 @@ import sys
 from analyze import transcribe
 from clean import extract_structured_content
 from fetch import cleanup_temp_file, download_audio_temp, fetch_html, is_video_page
-from reports import load_urls, save_summary
+from reports import load_urls, save_summary, save_discovered_meetings
 from settings import (
     DOWNLOAD_AUDIO,
     INPUT_FILE,
@@ -14,13 +14,12 @@ from settings import (
     TRANSCRIPT_OUTPUT_DIR,
 )
 from storage import ensure_directories, save_text
-from claude_analysis import analyze_text_file
-
+from discovery import discover_meeting_urls
 
 def process_url(url: str, download_audio: bool) -> dict:
     print(f"Processing: {url}")
 
-    html = fetch_html(url)
+    html = fetch_html(url)    
 
     if not html:
         return {
@@ -34,9 +33,24 @@ def process_url(url: str, download_audio: bool) -> dict:
             "analysis_file": "",
             "analysis_character_count": 0,
             "chunks_used": 0,
-        }
-
+            "discovered_meetings": "",
+        }, []
+    
     print(f"Downloaded {len(html):,} characters")
+
+    discovered_meetings = discover_meeting_urls(html, url)
+    
+    discovered_rows = []
+    for meeting_url in discovered_meetings:
+        print(f"Discovered meeting: {meeting_url}")
+
+        discovered_rows.append({
+        "source_url": url,
+        "meeting_url": meeting_url,
+        "status": "discovered",
+        "transcript_file": "",
+    })
+
 
     text = extract_structured_content(html, url)
     text_file = save_text(text, url, OUTPUT_DIR)
@@ -69,7 +83,11 @@ def process_url(url: str, download_audio: bool) -> dict:
         "character_count": len(text),
         "transcript_status": transcript_status,
         "transcript_file": transcript_file,
-    }
+        "analysis_status": "",
+        "analysis_file": "",
+        "analysis_character_count": 0,
+        "chunks_used": 0,
+    }, discovered_rows
 
 
 def main(input_file="urls.csv", test_mode=True, download_audio=True) -> None:
@@ -82,14 +100,18 @@ def main(input_file="urls.csv", test_mode=True, download_audio=True) -> None:
     urls = load_urls(input_file, test_mode=test_mode, max_urls=MAX_URLS)
 
     results = []
+    all_discovered_meetings = []
+
     for _, row in urls.iterrows():
-        results.append(process_url(row["url"], download_audio))
+        result, discovered_rows = process_url(row["url"], download_audio)
+        results.append(result)
+        all_discovered_meetings.extend(discovered_rows)
 
     summary_file = save_summary(results, OUTPUT_DIR, SUMMARY_FILENAME)
-    print(f"Done. Summary saved to {summary_file}")
+    discovered_file = save_discovered_meetings(all_discovered_meetings, OUTPUT_DIR)
 
-    result = analyze_text_file("output/example_file.txt")
-    print(result)
+    print(f"Done. Summary saved to {summary_file}")
+    print(f"Discovered meetings saved to {discovered_file}")
 
 if __name__ == "__main__":
     main()
