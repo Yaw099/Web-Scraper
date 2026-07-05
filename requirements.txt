@@ -16,3 +16,9 @@ python-dotenv
 
 requests
 openpyxl
+
+pypdf
+pdfplumber
+python-docx
+openpyxl
+xlrd

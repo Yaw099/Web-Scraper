@@ -1,6 +1,7 @@
 import os
 
 import pandas as pd
+from pathlib import Path
 
 SUMMARY_COLUMNS = [
     "url",
@@ -42,6 +43,30 @@ def save_summary(results, output_dir, filename):
     df.to_csv(summary_path, index=False)
 
     return summary_path
+
+
+def save_document_summary(document_rows, output_dir, filename="document_summary.csv"):
+    output_path = Path(output_dir) / filename
+
+    df = pd.DataFrame(document_rows)
+
+    if df.empty:
+        df = pd.DataFrame(columns=[
+            "source_url",
+            "document_url",
+            "local_path",
+            "normalized_path",
+            "document_text_file",
+            "file_type",
+            "success",
+            "error",
+            "character_count",
+            "document_analysis_file",
+            "analysis_status",
+        ])
+
+    df.to_csv(output_path, index=False)
+    return output_path
 
 
 def save_discovered_meetings(discovered_rows, output_dir):

@@ -12,7 +12,6 @@ from main import main
 from settings import DEFAULT_CHUNK_SIZE, INPUT_FILE
 from meeting_transcription import transcribe_meeting_url
 
-
 class ScraperGUI:
     def __init__(self, root):
         self.root = root
@@ -119,6 +118,12 @@ class ScraperGUI:
             command=self.prompt_transcribe_meeting_url,
         ).pack(side="left", padx=5, pady=5)
 
+        ttk.Button(
+            pipeline_frame,
+            text="Transcribe All Discovered Meetings",
+            command=self.confirm_bulk_transcribe_meetings,
+        ).pack(side="left", padx=5, pady=5)
+
         analysis_frame = ttk.LabelFrame(self.root, text="2. AI Analysis")
         analysis_frame.pack(fill="x", padx=10, pady=5)
 
@@ -173,6 +178,36 @@ class ScraperGUI:
             command=lambda: self.open_folder("analysis"),
         ).pack(side="left", padx=5, pady=5)
 
+        folder_frame = ttk.LabelFrame(self.root, text="4. Documents")
+        folder_frame.pack(fill="x", padx=10, pady=5)
+
+        ttk.Button(
+            folder_frame,
+            text="Extract Document Text",
+            command=self.extract_document_text,
+        ).pack(side="left", padx=5, pady=5)
+
+        ttk.Button(
+            folder_frame,
+            text="Analyze Document Text Folder",
+            command=lambda: self.analyze_folder(
+                "output/document_text",
+                "output/document_analysis"
+            ),
+        ).pack(side="left", padx=5, pady=5)
+
+        ttk.Button(
+            folder_frame,
+            text="Open Documents Folder",
+            command=lambda: self.open_folder("output/documents"),
+        ).pack(side="left", padx=5, pady=5)
+
+        ttk.Button(
+            folder_frame,
+            text="Open Document Analysis Folder",
+            command=lambda: self.open_folder("output/document_analysis"),
+        ).pack(side="left", padx=5, pady=5)
+
         log_frame = ttk.LabelFrame(self.root, text="Log")
         log_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
@@ -212,12 +247,13 @@ class ScraperGUI:
             self.log(f"Could not open file: {error}")
 
     def open_folder(self, folder_path):
-        os.makedirs(folder_path, exist_ok=True)
+        path = Path(folder_path)
+        path.mkdir(parents=True, exist_ok=True)
 
         try:
-            os.startfile(folder_path)
+            os.startfile(str(path.resolve()))
         except AttributeError:
-            subprocess.run(["open", folder_path], check=False)
+            subprocess.run(["open", str(path.resolve())], check=False)
         except Exception as error:
             self.log(f"Could not open folder: {error}")
 
@@ -273,6 +309,61 @@ class ScraperGUI:
                 0,
                 lambda: messagebox.showerror("Error", str(error)),
             )
+
+    def extract_document_text(self):
+        threading.Thread(
+            target=self.run_extract_document_text,
+            daemon=True,
+        ).start()
+
+
+    def run_extract_document_text(self):
+        from documents import process_document
+        from storage import save_text
+        from settings import DOCUMENT_OUTPUT_DIR, DOCUMENT_TEXT_OUTPUT_DIR
+
+        document_folder = Path(DOCUMENT_OUTPUT_DIR)
+        text_folder = Path(DOCUMENT_TEXT_OUTPUT_DIR)
+        text_folder.mkdir(parents=True, exist_ok=True)
+
+        files = [
+            path for path in document_folder.iterdir()
+            if path.is_file() and path.suffix.lower() in {
+                ".pdf", ".doc", ".docx", ".txt", ".xls", ".xlsx", ".csv", ".rtf"
+            }
+        ]
+
+        if not files:
+            self.log("No documents found to extract.")
+            return
+
+        self.set_status("Extracting document text...")
+
+        for index, path in enumerate(files, start=1):
+            try:
+                self.log(f"Extracting {index} of {len(files)}: {path.name}")
+
+                # Use file path as a fake URL source name for save_text
+                from documents import normalize_document, extract_text
+
+                normalized_path = normalize_document(path)
+                text = extract_text(normalized_path)
+
+                if text.strip():
+                    text_file = save_text(
+                        text,
+                        path.name,
+                        DOCUMENT_TEXT_OUTPUT_DIR
+                    )
+                    self.log(f"Saved text: {text_file}")
+                else:
+                    self.log(f"No text extracted: {path.name}")
+
+            except Exception as error:
+                self.log(f"Failed to extract {path.name}: {error}")
+
+        self.set_status("Ready")
+        self.log("Document text extraction complete.")
 
     def prompt_transcribe_meeting_url(self):
         csv_path = Path("output/discovered_meetings.csv")
@@ -363,6 +454,78 @@ class ScraperGUI:
                 0,
                 lambda: messagebox.showerror("Error", str(error)),
             )
+    
+    def confirm_bulk_transcribe_meetings(self):
+        csv_path = Path("output/discovered_meetings.csv")
+
+        if not csv_path.exists():
+            messagebox.showinfo(
+                "No Discovered Meetings",
+                "Run the pipeline first to create output/discovered_meetings.csv."
+            )
+            return
+
+        try:
+            import pandas as pd
+            df = pd.read_csv(csv_path)
+        except Exception as error:
+            messagebox.showerror("Error", f"Could not read discovered meetings CSV:\n{error}")
+            return
+
+        if "meeting_url" not in df.columns or df.empty:
+            messagebox.showinfo(
+                "No Meeting URLs",
+                "No meeting_url values were found in discovered_meetings.csv."
+            )
+            return
+
+        urls = df["meeting_url"].dropna().drop_duplicates().tolist()
+
+        if not urls:
+            messagebox.showinfo("No Meetings", "No valid meeting URLs found.")
+            return
+
+        confirm = messagebox.askyesno(
+            "Confirm Bulk Transcription",
+            f"Transcribe {len(urls)} discovered meetings?\n\n"
+            "This may take a long time and download large audio files."
+        )
+
+        if not confirm:
+            return
+
+        threading.Thread(
+            target=self.run_bulk_meeting_transcription,
+            args=(urls,),
+            daemon=True,
+        ).start()
+
+
+    def run_bulk_meeting_transcription(self, urls):
+        total = len(urls)
+
+        for index, url in enumerate(urls, start=1):
+            try:
+                self.set_status(f"Transcribing meeting {index} of {total}")
+                self.log(f"Transcribing meeting {index} of {total}: {url}")
+
+                transcript_file = transcribe_meeting_url(url)
+
+                self.log(f"Transcript saved to: {transcript_file}")
+
+            except Exception as error:
+                self.log(f"Failed to transcribe {url}: {error}")
+
+        self.set_status("Ready")
+        self.log("Bulk meeting transcription complete.")
+
+        self.root.after(
+            0,
+            lambda: messagebox.showinfo(
+                "Done",
+                "Bulk meeting transcription complete."
+            ),
+        )
 
     def estimate_existing_file(self):
         self.set_status("Estimating...")
@@ -463,17 +626,14 @@ class ScraperGUI:
                 lambda: messagebox.showerror("Error", str(error)),
             )
 
-    def analyze_folder(self, folder_path):
+    def analyze_folder(self, folder_path, output_folder="analysis"):
         folder = Path(folder_path)
         folder.mkdir(exist_ok=True)
 
         files = list(folder.glob("*.txt"))
 
         if not files:
-            messagebox.showinfo(
-                "No Files",
-                f"No .txt files found in {folder_path}.",
-            )
+            messagebox.showinfo("No Files", f"No .txt files found in {folder_path}.")
             return
 
         confirm = messagebox.askyesno(
@@ -486,13 +646,13 @@ class ScraperGUI:
 
         threading.Thread(
             target=self.run_folder_analysis,
-            args=(files,),
+            args=(files, output_folder),
             daemon=True,
         ).start()
 
-    def run_folder_analysis(self, files):
-        output_dir = Path("analysis")
-        output_dir.mkdir(exist_ok=True)
+    def run_folder_analysis(self, files, output_folder="analysis"):
+        output_dir = Path(output_folder)
+        output_dir.mkdir(parents=True, exist_ok=True)
 
         total = len(files)
 
