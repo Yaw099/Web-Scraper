@@ -302,12 +302,13 @@ class ScraperGUI:
             )
 
         except Exception as error:
-            self.log(f"ERROR: {error}")
+            error_message = str(error)
+            self.log(f"ERROR: {error_message}")
             self.set_status("Error occurred. See log for details.")
 
             self.root.after(
                 0,
-                lambda: messagebox.showerror("Error", str(error)),
+                lambda: messagebox.showerror("Error", error_message),
             )
 
     def extract_document_text(self):
@@ -447,12 +448,13 @@ class ScraperGUI:
             )
 
         except Exception as error:
-            self.log(f"Meeting transcription failed: {error}")
+            error_message = str(error)
+            self.log(f"ERROR: {error_message}")
             self.set_status("Error occurred. See log for details.")
 
             self.root.after(
                 0,
-                lambda: messagebox.showerror("Error", str(error)),
+                lambda: messagebox.showerror("Error", error_message),
             )
     
     def confirm_bulk_transcribe_meetings(self):
@@ -618,12 +620,13 @@ class ScraperGUI:
             self.set_status("Ready")
 
         except Exception as error:
-            self.log(f"Analysis failed: {error}")
+            error_message = str(error)
+            self.log(f"ERROR: {error_message}")
             self.set_status("Error occurred. See log for details.")
 
             self.root.after(
                 0,
-                lambda: messagebox.showerror("Error", str(error)),
+                lambda: messagebox.showerror("Error", error_message),
             )
 
     def analyze_folder(self, folder_path, output_folder="analysis"):

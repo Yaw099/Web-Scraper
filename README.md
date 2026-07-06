@@ -61,7 +61,7 @@ $env:ANTHROPIC_API_KEY=your_api_key_here
 ### 5. Launch the Application
 
 ```bash
-py gui.py
+py -m gui.gui
 ```
 
 The Regulatory Web Scraper window should appear.
