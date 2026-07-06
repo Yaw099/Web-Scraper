@@ -1,6 +1,6 @@
 from faster_whisper import WhisperModel
 
-from settings import (
+from config.settings import (
     TRANSCRIPTION_COMPUTE_TYPE,
     TRANSCRIPTION_DEVICE,
     TRANSCRIPTION_MODEL,

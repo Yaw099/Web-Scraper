@@ -1,7 +1,7 @@
 import os
 from dataclasses import dataclass
-from claude_analysis import analyze_text as analyze_with_claude
-from settings import DEFAULT_CHUNK_SIZE
+from src.claude_analysis import analyze_text as analyze_with_claude
+from config.settings import DEFAULT_CHUNK_SIZE
 
 
 @dataclass

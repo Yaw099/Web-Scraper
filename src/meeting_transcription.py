@@ -1,7 +1,7 @@
-from analyze import transcribe
-from fetch import cleanup_temp_file, download_audio_temp
-from settings import TRANSCRIPT_OUTPUT_DIR
-from storage import save_text
+from src.analyze import transcribe
+from src.fetch import cleanup_temp_file, download_audio_temp
+from config.settings import TRANSCRIPT_OUTPUT_DIR
+from src.storage import save_text
 
 
 def transcribe_meeting_url(url: str) -> str:

@@ -162,6 +162,11 @@ output/
 transcripts/
 analysis/
 videos/
+downloads/
+temp/
+tmp/
+data/
+!data/.gitkeep
 
 # Spyder project settings
 .spyderproject
@@ -222,3 +227,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Playwright
+playwright/
+ms-playwright/
+
+# Local Configuration
+settings.local.py
+config.local.py
+
+# logs
+logs/
+*.log

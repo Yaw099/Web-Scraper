@@ -1,12 +1,11 @@
 import sys
-
-from analyze import transcribe
-from analysis_service import analyze_large_text
-from clean import extract_structured_content
-from fetch import cleanup_temp_file, download_audio_temp, fetch_html, is_video_page
-from reports import load_urls, save_summary, save_discovered_meetings, save_document_summary
-from documents import discover_document_links, download_documents_from_links
-from settings import (
+import traceback
+from src.analyze import transcribe
+from src.clean import extract_structured_content
+from src.fetch import cleanup_temp_file, download_audio_temp, fetch_html, is_video_page
+from src.reports import load_urls, save_summary, save_discovered_meetings, save_document_summary
+from src.documents import discover_document_links, download_documents_from_links
+from config.settings import (
     DOWNLOAD_AUDIO,
     INPUT_FILE,
     MAX_URLS,
@@ -18,8 +17,8 @@ from settings import (
     DOCUMENT_TEXT_OUTPUT_DIR,
     DOCUMENT_ANALYSIS_OUTPUT_DIR,    
 )
-from storage import ensure_directories, save_text
-from discovery import discover_meeting_urls
+from src.storage import ensure_directories, save_text
+from src.discovery import discover_meeting_urls
 
 def process_url(url: str, download_audio: bool) -> dict:
     print(f"Processing: {url}")
@@ -125,7 +124,7 @@ def process_url(url: str, download_audio: bool) -> dict:
     }, discovered_rows, document_rows
 
 
-def main(input_file="urls.csv", test_mode=True, download_audio=True) -> None:
+def main(input_file=INPUT_FILE, test_mode=TEST_MODE, download_audio=DOWNLOAD_AUDIO,) -> None:
     print("Python executable:")
     print(sys.executable)
     print()
@@ -139,10 +138,33 @@ def main(input_file="urls.csv", test_mode=True, download_audio=True) -> None:
     all_document_rows = []
 
     for _, row in urls.iterrows():
-        result, discovered_rows, document_rows = process_url(row["url"], download_audio)
-        results.append(result)
-        all_discovered_meetings.extend(discovered_rows)
-        all_document_rows.extend(document_rows)
+        url = row["url"]
+
+        try:
+            pipeline_result, discovered_rows, document_rows = process_url(
+                url,
+                download_audio,
+            )
+
+            results.append(pipeline_result)
+            all_discovered_meetings.extend(discovered_rows)
+            all_document_rows.extend(document_rows)
+
+        except Exception as error:
+            print(f"ERROR processing {url}: traceback.print_exc()")
+
+            results.append({
+                "url": url,
+                "status": "failed",
+                "text_file": "",
+                "character_count": 0,
+                "transcript_status": "",
+                "transcript_file": "",
+                "analysis_status": "",
+                "analysis_file": "",
+                "analysis_character_count": 0,
+                "chunks_used": 0,
+            })
 
     summary_file = save_summary(results, OUTPUT_DIR, SUMMARY_FILENAME)
     discovered_file = save_discovered_meetings(all_discovered_meetings, OUTPUT_DIR)

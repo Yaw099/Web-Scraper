@@ -7,10 +7,10 @@ from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
 from tkinter.scrolledtext import ScrolledText
 
-from analysis_service import analyze_large_text, estimate_analysis
+from src.analysis_service import analyze_large_text, estimate_analysis
 from main import main
-from settings import DEFAULT_CHUNK_SIZE, INPUT_FILE
-from meeting_transcription import transcribe_meeting_url
+from config.settings import DEFAULT_CHUNK_SIZE, INPUT_FILE
+from src.meeting_transcription import transcribe_meeting_url
 
 class ScraperGUI:
     def __init__(self, root):
@@ -318,9 +318,9 @@ class ScraperGUI:
 
 
     def run_extract_document_text(self):
-        from documents import process_document
-        from storage import save_text
-        from settings import DOCUMENT_OUTPUT_DIR, DOCUMENT_TEXT_OUTPUT_DIR
+        from src.documents import process_document
+        from src.storage import save_text
+        from config.settings import DOCUMENT_OUTPUT_DIR, DOCUMENT_TEXT_OUTPUT_DIR
 
         document_folder = Path(DOCUMENT_OUTPUT_DIR)
         text_folder = Path(DOCUMENT_TEXT_OUTPUT_DIR)
@@ -344,7 +344,7 @@ class ScraperGUI:
                 self.log(f"Extracting {index} of {len(files)}: {path.name}")
 
                 # Use file path as a fake URL source name for save_text
-                from documents import normalize_document, extract_text
+                from src.documents import normalize_document, extract_text
 
                 normalized_path = normalize_document(path)
                 text = extract_text(normalized_path)
