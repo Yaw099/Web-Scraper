@@ -20,5 +20,6 @@ openpyxl
 pypdf
 pdfplumber
 python-docx
-openpyxl
+pymupdf
 xlrd
+python-pptx

@@ -330,7 +330,7 @@ class ScraperGUI:
         files = [
             path for path in document_folder.iterdir()
             if path.is_file() and path.suffix.lower() in {
-                ".pdf", ".doc", ".docx", ".txt", ".xls", ".xlsx", ".csv", ".rtf"
+                ".pdf", ".doc", ".docx", ".ppt", ".pptx", ".txt", ".xls", ".xlsx", ".csv", ".rtf"
             }
         ]
 

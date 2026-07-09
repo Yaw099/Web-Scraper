@@ -8,10 +8,12 @@ import shutil
 import subprocess
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+from pptx import Presentation
 
 
 DOCUMENT_EXTENSIONS = {
     ".pdf", ".doc", ".docx",
+    "ppt", ".pptx",
     ".txt", ".xls", ".xlsx",
     ".csv", ".rtf"
 }
@@ -207,6 +209,31 @@ def extract_docx(path):
 
     return "\n".join(output)
 
+def extract_pptx(path):
+    presentation = Presentation(path)
+
+    output = []
+
+    for slide_index, slide in enumerate(presentation.slides, start=1):
+        output.append(f"\n--- Slide {slide_index} ---")
+
+        for shape in slide.shapes:
+            if hasattr(shape, "text"):
+                text = shape.text.strip()
+                if text:
+                    output.append(text)
+
+            if shape.has_table:
+                output.append("--- Table ---")
+
+                for row in shape.table.rows:
+                    cells = [
+                        cell.text.strip().replace("\n", " ")
+                        for cell in row.cells
+                    ]
+                    output.append(" | ".join(cells))
+
+    return "\n".join(output)
 
 def extract_excel(path):
     sheets = pd.read_excel(path, sheet_name=None)
@@ -233,6 +260,9 @@ def extract_text(path):
 
     elif ext == ".docx":
         return extract_docx(path)
+
+    elif ext == ".pptx":
+        return extract_pptx(path)
 
     elif ext == ".txt":
         return extract_txt(path)
