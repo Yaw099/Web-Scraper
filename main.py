@@ -20,7 +20,7 @@ from config.settings import (
 from src.storage import ensure_directories, save_text
 from src.discovery import discover_meeting_urls
 
-def process_url(url: str, download_audio: bool) -> dict:
+def process_url(url: str, download_audio: bool,) -> tuple[dict, list[dict], list[dict]]:
     print(f"Processing: {url}")
 
     html = fetch_html(url)    
@@ -37,7 +37,6 @@ def process_url(url: str, download_audio: bool) -> dict:
             "analysis_file": "",
             "analysis_character_count": 0,
             "chunks_used": 0,
-            "discovered_meetings": "",
         }, [], []
     
     print(f"Downloaded {len(html):,} characters")
@@ -124,12 +123,22 @@ def process_url(url: str, download_audio: bool) -> dict:
     }, discovered_rows, document_rows
 
 
-def main(input_file=INPUT_FILE, test_mode=TEST_MODE, download_audio=DOWNLOAD_AUDIO,) -> None:
+def main(
+    input_file=INPUT_FILE,
+    test_mode=TEST_MODE,
+    download_audio=DOWNLOAD_AUDIO,
+) -> None:
     print("Python executable:")
     print(sys.executable)
     print()
 
-    ensure_directories(OUTPUT_DIR, TRANSCRIPT_OUTPUT_DIR, DOCUMENT_OUTPUT_DIR, DOCUMENT_TEXT_OUTPUT_DIR, DOCUMENT_ANALYSIS_OUTPUT_DIR,)
+    ensure_directories(
+        OUTPUT_DIR,
+        TRANSCRIPT_OUTPUT_DIR,
+        DOCUMENT_OUTPUT_DIR,
+        DOCUMENT_TEXT_OUTPUT_DIR,
+        DOCUMENT_ANALYSIS_OUTPUT_DIR,
+    )
 
     urls = load_urls(input_file, test_mode=test_mode, max_urls=MAX_URLS)
 
@@ -138,7 +147,13 @@ def main(input_file=INPUT_FILE, test_mode=TEST_MODE, download_audio=DOWNLOAD_AUD
     all_document_rows = []
 
     for _, row in urls.iterrows():
-        url = row["url"]
+        url_value = row["url"]
+
+        if not isinstance(url_value, str) or not url_value.strip():
+            print("Skipping blank or invalid URL.")
+            continue
+
+        url = url_value.strip()
 
         try:
             pipeline_result, discovered_rows, document_rows = process_url(
@@ -151,7 +166,8 @@ def main(input_file=INPUT_FILE, test_mode=TEST_MODE, download_audio=DOWNLOAD_AUD
             all_document_rows.extend(document_rows)
 
         except Exception as error:
-            print(f"ERROR processing {url}: traceback.print_exc()")
+            print(f"ERROR processing {url}: {error}")
+            traceback.print_exc()
 
             results.append({
                 "url": url,
