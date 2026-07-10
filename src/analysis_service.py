@@ -18,6 +18,9 @@ def analyze_text(text: str, source_name: str = "unknown") -> str:
 
 
 def chunk_text(text: str, max_chars: int = DEFAULT_CHUNK_SIZE) -> list[str]:
+    if max_chars <= 0:
+        raise ValueError("max_chars must be greater than 0.")
+
     chunks = []
     current = []
 
@@ -29,14 +32,13 @@ def chunk_text(text: str, max_chars: int = DEFAULT_CHUNK_SIZE) -> list[str]:
         if not paragraph:
             continue
 
-        candidate = "\n\n".join(current + [paragraph])
+        # Handle paragraphs that exceed the limit on their own.
+        if len(paragraph) > max_chars:
+            if current:
+                chunks.append("\n\n".join(current))
+                current = []
 
-        if len(candidate) > max_chars and current:
-            chunks.append("\n\n".join(current))
-            current = [paragraph]
-        elif len(paragraph) > max_chars:
-            chunks.append(paragraph[:max_chars])
-            remaining = paragraph[max_chars:]
+            remaining = paragraph
 
             while len(remaining) > max_chars:
                 chunks.append(remaining[:max_chars])
@@ -44,8 +46,14 @@ def chunk_text(text: str, max_chars: int = DEFAULT_CHUNK_SIZE) -> list[str]:
 
             if remaining:
                 current = [remaining]
-            else:
-                current = []
+
+            continue
+
+        candidate = "\n\n".join(current + [paragraph])
+
+        if len(candidate) > max_chars and current:
+            chunks.append("\n\n".join(current))
+            current = [paragraph]
         else:
             current.append(paragraph)
 
@@ -76,10 +84,13 @@ def analyze_large_text(
     source_name: str = "unknown",
     max_chars: int = DEFAULT_CHUNK_SIZE
 ) -> str:
+    if not text or not text.strip():
+        raise ValueError(f"{source_name} contains no text to analyze.")
+
     chunks = chunk_text(text, max_chars=max_chars)
 
     if len(chunks) == 1:
-        return analyze_text(text, source_name)
+        return analyze_text(chunks[0], source_name)
 
     partial_reports = []
 

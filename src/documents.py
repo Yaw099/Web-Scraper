@@ -1,5 +1,6 @@
 from pathlib import Path
 from urllib.parse import urlparse, unquote
+from collections.abc import Callable
 import requests
 import pandas as pd
 from pypdf import PdfReader
@@ -12,10 +13,16 @@ from pptx import Presentation
 
 
 DOCUMENT_EXTENSIONS = {
-    ".pdf", ".doc", ".docx",
-    "ppt", ".pptx",
-    ".txt", ".xls", ".xlsx",
-    ".csv", ".rtf"
+    ".pdf",
+    ".doc",
+    ".docx",
+    ".ppt",
+    ".pptx",
+    ".txt",
+    ".xls",
+    ".xlsx",
+    ".csv",
+    ".rtf",
 }
 
 def discover_document_links(html, base_url):
@@ -137,7 +144,14 @@ def download_document(url, output_folder):
     if converted and converted.exists():
         return converted
     
-    response = requests.get(url, stream=True, timeout=30)
+    response = requests.get(
+        url,
+        stream=True,
+        timeout=30,
+        headers={
+            "User-Agent": "Mozilla/5.0"
+        }
+    )
     response.raise_for_status()
 
     with open(local_path, "wb") as file:
@@ -248,32 +262,34 @@ def extract_excel(path):
 
 
 def extract_csv(path):
-    df = pd.read_csv(path)
+    try:
+        df = pd.read_csv(path)
+    except UnicodeDecodeError:
+        df = pd.read_csv(path, encoding="latin-1")
+
     return df.to_string(index=False)
 
+
+EXTRACTORS: dict[str, Callable[[Path], str]] = {
+    ".pdf": extract_pdf,
+    ".docx": extract_docx,
+    ".pptx": extract_pptx,
+    ".txt": extract_txt,
+    ".rtf": extract_txt,
+    ".xls": extract_excel,
+    ".xlsx": extract_excel,
+    ".csv": extract_csv,
+}
 
 def extract_text(path):
     ext = get_document_type(path)
 
-    if ext == ".pdf":
-        return extract_pdf(path)
+    extractor = EXTRACTORS.get(ext)
 
-    elif ext == ".docx":
-        return extract_docx(path)
-
-    elif ext == ".pptx":
-        return extract_pptx(path)
-
-    elif ext == ".txt":
-        return extract_txt(path)
-
-    elif ext in [".xls", ".xlsx"]:
-        return extract_excel(path)
-
-    elif ext == ".csv":
-        return extract_csv(path)
-    else:
+    if extractor is None:
         raise ValueError(f"Unsupported document type: {ext}")
+
+    return extractor(path)
     
 
 def process_documents_from_links(links, output_folder):
@@ -367,8 +383,3 @@ def download_documents_from_links(links, output_folder):
             })
 
     return results
-
-# extract_tables_pdf()
-# extract_sheet_names()
-# extract_headings()
-# extract_pptx()

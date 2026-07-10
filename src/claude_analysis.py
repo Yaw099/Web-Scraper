@@ -73,5 +73,3 @@ def analyze_text_file(filepath: str, output_dir: str = ANALYSIS_OUTPUT_DIR) -> s
 
     return str(output_path)
 
-# $env:ANTHROPIC_API_KEY=""
-

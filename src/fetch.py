@@ -8,21 +8,26 @@ from playwright.sync_api import sync_playwright
 
 
 def fetch_html(url: str) -> str | None:
+    browser = None
+
     try:
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch(headless=True)
             page = browser.new_page(ignore_https_errors=True)
             page.goto(url, wait_until="networkidle", timeout=60000)
-            html = page.content()
-            browser.close()
-            return html
+            return page.content()
+
     except Exception as error:
         print(f"Failed to fetch {url}: {error}")
         return None
 
+    finally:
+        if browser:
+            browser.close()
+
 
 def is_video_page(url: str) -> bool:
-    return "adminmonitor.com" in url.lower()
+    return "adminmonitor.com/tx/puct/open_meeting/" in url.lower()
 
 
 def download_audio_temp(url: str) -> str | None:

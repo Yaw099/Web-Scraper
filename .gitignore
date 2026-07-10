@@ -167,6 +167,8 @@ temp/
 tmp/
 data/
 !data/.gitkeep
+tests/
+
 
 # Spyder project settings
 .spyderproject
