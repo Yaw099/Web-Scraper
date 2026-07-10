@@ -8,22 +8,25 @@ from playwright.sync_api import sync_playwright
 
 
 def fetch_html(url: str) -> str | None:
-    browser = None
-
     try:
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch(headless=True)
-            page = browser.new_page(ignore_https_errors=True)
-            page.goto(url, wait_until="networkidle", timeout=60000)
-            return page.content()
+
+            try:
+                page = browser.new_page(ignore_https_errors=True)
+                page.goto(
+                    url,
+                    wait_until="networkidle",
+                    timeout=60000,
+                )
+                return page.content()
+
+            finally:
+                browser.close()
 
     except Exception as error:
         print(f"Failed to fetch {url}: {error}")
         return None
-
-    finally:
-        if browser:
-            browser.close()
 
 
 def is_video_page(url: str) -> bool:
