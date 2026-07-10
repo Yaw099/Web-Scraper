@@ -319,13 +319,17 @@ class ScraperGUI:
 
 
     def run_extract_document_text(self):
-        from src.documents import process_document
         from src.storage import save_text
         from config.settings import DOCUMENT_OUTPUT_DIR, DOCUMENT_TEXT_OUTPUT_DIR
 
         document_folder = Path(DOCUMENT_OUTPUT_DIR)
         text_folder = Path(DOCUMENT_TEXT_OUTPUT_DIR)
         text_folder.mkdir(parents=True, exist_ok=True)
+
+        if not document_folder.exists():
+            self.log("No documents folder found. Run the pipeline first.")
+            self.set_status("Ready")
+            return
 
         files = [
             path for path in document_folder.iterdir()
@@ -468,7 +472,6 @@ class ScraperGUI:
             return
 
         try:
-            import pandas as pd
             df = pd.read_csv(csv_path)
         except Exception as error:
             messagebox.showerror("Error", f"Could not read discovered meetings CSV:\n{error}")
@@ -537,6 +540,7 @@ class ScraperGUI:
         )
 
         if not filepath:
+            self.set_status("Ready")
             return
 
         try:
@@ -578,6 +582,7 @@ class ScraperGUI:
         )
 
         if not filepath:
+            self.set_status("Ready")
             return
 
         threading.Thread(
@@ -617,7 +622,6 @@ class ScraperGUI:
                     f"Analysis saved to:\n{output_path}",
                 ),
             )
-            self.set_status("Ready")
 
         except Exception as error:
             error_message = str(error)
@@ -628,6 +632,8 @@ class ScraperGUI:
                 0,
                 lambda: messagebox.showerror("Error", error_message),
             )
+            
+        self.set_status("Ready")
 
     def analyze_folder(self, folder_path, output_folder="analysis"):
         folder = Path(folder_path)
@@ -684,11 +690,10 @@ class ScraperGUI:
 
                 self.log(f"Saved: {output_path}")
 
-                self.set_status("Ready")
-
             except Exception as error:
                 self.log(f"Failed: {path.name} — {error}")
 
+        self.set_status("Ready")
         self.log("Folder analysis complete.")
 
         self.root.after(
