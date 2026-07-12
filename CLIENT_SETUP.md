@@ -176,6 +176,16 @@ Replace `your_api_key_here` with your Anthropic API key.
 
 If you only want scraping and transcription, this step can be skipped.
 
+Set it manually in the term like this: 
+```
+$env:ANTHROPIC_API_KEY="your_api_key_here"
+```
+
+Check that it is set: 
+```
+echo $env:ANTHROPIC_API_KEY
+```
+
 ---
 
 # Step 8 – Verify Installation

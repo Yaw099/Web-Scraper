@@ -4,7 +4,8 @@ from anthropic import Anthropic
 from dotenv import load_dotenv
 from config.settings import ANTHROPIC_MODEL, ANTHROPIC_MAX_TOKENS, ANALYSIS_OUTPUT_DIR
 
-load_dotenv()
+ROOT_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(ROOT_DIR / ".env")
 
 
 def build_analysis_prompt(text: str, source_name: str) -> str:
