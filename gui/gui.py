@@ -16,7 +16,8 @@ class ScraperGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Regulatory Web Scraper")
-        self.root.geometry("1050x650")
+        self.root.geometry("1050x700")
+        self.root.minsize(750, 550)
 
         self.csv_path = tk.StringVar(value=INPUT_FILE)
         self.status_text = tk.StringVar(value="Status: Ready")
@@ -24,25 +25,51 @@ class ScraperGUI:
         self.test_mode = tk.BooleanVar(value=True)
         self.download_audio = tk.BooleanVar(value=True)
 
+        self.root.columnconfigure(0, weight=1)
+        self.root.rowconfigure(0, weight=1)
+
+        self.main_frame = ttk.Frame(self.root, padding=10)
+        self.main_frame.grid(row=0, column=0, sticky="nsew")
+
+        self.main_frame.columnconfigure(0, weight=1)
+
         self.build_ui()
 
     def build_ui(self):
         title = ttk.Label(
-            self.root,
+            self.main_frame,
             text="Regulatory Web Scraper",
             font=("Segoe UI", 16, "bold"),
         )
         title.pack(pady=10)
 
         status_label = ttk.Label(
-            self.root,
+            self.main_frame,
             textvariable=self.status_text,
-            font=("Segoe UI", 10)
+            font=("Segoe UI", 10),
         )
         status_label.pack(pady=(0, 10))
 
-        input_frame = ttk.LabelFrame(self.root, text="Input")
-        input_frame.pack(fill="x", padx=10, pady=5)
+        self.notebook = ttk.Notebook(self.main_frame)
+        self.notebook.pack(fill="both", expand=True, pady=(0, 10))
+
+        collection_tab = ttk.Frame(self.notebook, padding=10)
+        self.notebook.add(collection_tab, text="Collection")
+
+        documents_tab = ttk.Frame(self.notebook, padding=10)
+        self.notebook.add(documents_tab, text="Documents")
+
+        meetings_tab = ttk.Frame(self.notebook, padding=10)
+        self.notebook.add(meetings_tab, text="Meetings")
+
+        analysis_tab = ttk.Frame(self.notebook, padding=10)
+        self.notebook.add(analysis_tab, text="Analysis")
+
+        log_tab = ttk.Frame(self.notebook, padding=10)
+        self.notebook.add(log_tab, text="Log")
+
+        input_frame = ttk.LabelFrame(collection_tab, text="Input")
+        input_frame.pack(fill="x", pady=(0, 5))
 
         ttk.Label(input_frame, text="URLs CSV").grid(
             row=0,
@@ -55,7 +82,6 @@ class ScraperGUI:
         ttk.Entry(
             input_frame,
             textvariable=self.csv_path,
-            width=90,
         ).grid(
             row=0,
             column=1,
@@ -77,8 +103,8 @@ class ScraperGUI:
 
         input_frame.columnconfigure(1, weight=1)
 
-        options_frame = ttk.LabelFrame(self.root, text="Options")
-        options_frame.pack(fill="x", padx=10, pady=5)
+        options_frame = ttk.LabelFrame(collection_tab, text="Options")
+        options_frame.pack(fill="x", pady=5)
 
         ttk.Checkbutton(
             options_frame,
@@ -103,113 +129,143 @@ class ScraperGUI:
             width=12,
         ).grid(row=0, column=2, padx=5, pady=5, sticky="w")
 
-        pipeline_frame = ttk.LabelFrame(self.root, text="1. Pipeline")
-        pipeline_frame.pack(fill="x", padx=10, pady=5)
+        pipeline_frame = ttk.LabelFrame(collection_tab, text="Pipeline")
+        pipeline_frame.pack(fill="x", pady=5)
+
+        for column in range(1):
+            pipeline_frame.columnconfigure(column, weight=1)
 
         ttk.Button(
             pipeline_frame,
             text="Run Pipeline",
             command=self.start_pipeline,
-        ).pack(side="left", padx=5, pady=5)
+        ).grid(row=0, column=0, padx=5, pady=5, sticky="ew")
+
+        meeting_processing_frame = ttk.LabelFrame(
+            meetings_tab,
+            text="Transcription",
+        )
+        meeting_processing_frame.pack(fill="x", pady=5)
+
+        for column in range(2):
+            meeting_processing_frame.columnconfigure(column, weight=1)
 
         ttk.Button(
-            pipeline_frame,
+            meeting_processing_frame,
             text="Transcribe Meeting URL",
             command=self.prompt_transcribe_meeting_url,
-        ).pack(side="left", padx=5, pady=5)
+        ).grid(row=0, column=0, padx=5, pady=5, sticky="ew")
 
         ttk.Button(
-            pipeline_frame,
+            meeting_processing_frame,
             text="Transcribe All Discovered Meetings",
             command=self.confirm_bulk_transcribe_meetings,
-        ).pack(side="left", padx=5, pady=5)
+        ).grid(row=0, column=1, padx=5, pady=5, sticky="ew")
 
-        analysis_frame = ttk.LabelFrame(self.root, text="2. AI Analysis")
-        analysis_frame.pack(fill="x", padx=10, pady=5)
+        meeting_files_frame = ttk.LabelFrame(
+            meetings_tab,
+            text="Meeting Files",
+        )
+        meeting_files_frame.pack(fill="x", pady=5)
+
+        for column in range(2):
+            meeting_files_frame.columnconfigure(column, weight=1)
+
+        ttk.Button(
+            meeting_files_frame,
+            text="Open Discovered Meetings CSV",
+            command=lambda: self.open_file("output/discovered_meetings.csv"),
+        ).grid(row=0, column=0, padx=5, pady=5, sticky="ew")
+
+        ttk.Button(
+            meeting_files_frame,
+            text="Open Transcripts Folder",
+            command=lambda: self.open_folder("transcripts"),
+        ).grid(row=0, column=1, padx=5, pady=5, sticky="ew")
+
+        analysis_frame = ttk.LabelFrame(analysis_tab, text="AI Analysis")
+        analysis_frame.pack(fill="x", pady=5)
+
+        for column in range(2):
+            analysis_frame.columnconfigure(column, weight=1)
 
         ttk.Button(
             analysis_frame,
             text="Estimate Claude Usage",
             command=self.estimate_existing_file,
-        ).pack(side="left", padx=5, pady=5)
+        ).grid(row=0, column=0, padx=5, pady=5, sticky="ew")
 
         ttk.Button(
             analysis_frame,
             text="Analyze Scraped Text File",
             command=self.analyze_existing_file,
-        ).pack(side="left", padx=5, pady=5)
+        ).grid(row=0, column=1, padx=5, pady=5, sticky="ew")
 
         ttk.Button(
             analysis_frame,
             text="Analyze Scraped Text Folder",
             command=lambda: self.analyze_folder("output"),
-        ).pack(side="left", padx=5, pady=5)
+        ).grid(row=1, column=0, padx=5, pady=5, sticky="ew")
 
         ttk.Button(
             analysis_frame,
             text="Analyze Transcripts Folder",
             command=lambda: self.analyze_folder("transcripts"),
-        ).pack(side="left", padx=5, pady=5)
+        ).grid(row=1, column=1, padx=5, pady=5, sticky="ew")
 
-        folder_frame = ttk.LabelFrame(self.root, text="3. Results Folders")
-        folder_frame.pack(fill="x", padx=10, pady=5)
+        analysis_file_frame = ttk.LabelFrame(analysis_tab, text="Web Page Files")
+        analysis_file_frame.pack(fill="x", pady=5)
+
+        for column in range(2):
+            analysis_file_frame.columnconfigure(column, weight=1)
 
         ttk.Button(
-            folder_frame,
+            analysis_file_frame,
             text="Open Scraped Text Folder",
             command=lambda: self.open_folder("output"),
-        ).pack(side="left", padx=5, pady=5)
+        ).grid(row=0, column=0, padx=5, pady=5, sticky="ew")
 
         ttk.Button(
-            folder_frame,
-            text="Open Discovered Meetings CSV",
-            command=lambda: self.open_file("output/discovered_meetings.csv"),
-        ).pack(side="left", padx=5, pady=5)
-
-        ttk.Button(
-            folder_frame,
-            text="Open Transcripts Folder",
-            command=lambda: self.open_folder("transcripts"),
-        ).pack(side="left", padx=5, pady=5)
-
-        ttk.Button(
-            folder_frame,
+            analysis_file_frame,
             text="Open Analysis Folder",
             command=lambda: self.open_folder("analysis"),
-        ).pack(side="left", padx=5, pady=5)
+        ).grid(row=0, column=1, padx=5, pady=5, sticky="ew")
 
-        folder_frame = ttk.LabelFrame(self.root, text="4. Documents")
-        folder_frame.pack(fill="x", padx=10, pady=5)
+        document_frame = ttk.LabelFrame(documents_tab, text="Documents")
+        document_frame.pack(fill="x", pady=5)
+
+        for column in range(2):
+            document_frame.columnconfigure(column, weight=1)
 
         ttk.Button(
-            folder_frame,
+            document_frame,
             text="Extract Document Text",
             command=self.extract_document_text,
-        ).pack(side="left", padx=5, pady=5)
+        ).grid(row=0, column=0, padx=5, pady=5, sticky="ew")
 
         ttk.Button(
-            folder_frame,
+            document_frame,
             text="Analyze Document Text Folder",
             command=lambda: self.analyze_folder(
                 "output/document_text",
-                "output/document_analysis"
+                "output/document_analysis",
             ),
-        ).pack(side="left", padx=5, pady=5)
+        ).grid(row=0, column=1, padx=5, pady=5, sticky="ew")
 
         ttk.Button(
-            folder_frame,
+            document_frame,
             text="Open Documents Folder",
             command=lambda: self.open_folder("output/documents"),
-        ).pack(side="left", padx=5, pady=5)
+        ).grid(row=1, column=0, padx=5, pady=5, sticky="ew")
 
         ttk.Button(
-            folder_frame,
+            document_frame,
             text="Open Document Analysis Folder",
             command=lambda: self.open_folder("output/document_analysis"),
-        ).pack(side="left", padx=5, pady=5)
+        ).grid(row=1, column=1, padx=5, pady=5, sticky="ew")
 
-        log_frame = ttk.LabelFrame(self.root, text="Log")
-        log_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        log_frame = ttk.LabelFrame(log_tab, text="Log")
+        log_frame.pack(fill="both", expand=True, pady=5)
 
         self.log_box = ScrolledText(log_frame)
         self.log_box.pack(fill="both", expand=True)
