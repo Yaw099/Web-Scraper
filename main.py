@@ -207,11 +207,19 @@ def main(
     for _, row in urls.iterrows():
         url_value = row["url"]
 
-        if not isinstance(url_value, str) or not url_value.strip():
+        if not isinstance(url_value, str):
             print("Skipping blank or invalid URL.")
             continue
 
-        url = url_value.strip()
+        url = (
+            url_value.strip()
+            .strip('"')
+            .strip("'")
+        )
+
+        if not url:
+            print("Skipping blank or invalid URL.")
+            continue
 
         try:
             pipeline_result, discovered_rows, document_rows = process_url(
