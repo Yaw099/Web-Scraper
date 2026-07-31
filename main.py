@@ -4,7 +4,11 @@ from src.analyze import transcribe
 from src.clean import extract_structured_content
 from src.fetch import cleanup_temp_file, download_audio_temp, fetch_html, is_video_page
 from src.reports import load_urls, save_summary, save_discovered_meetings, save_document_summary
-from src.documents import discover_document_links, download_documents_from_links
+from src.documents import (
+    discover_document_links,
+    download_documents_from_links,
+    is_downloadable_url,
+)
 from config.settings import (
     DOWNLOAD_AUDIO,
     INPUT_FILE,
@@ -20,8 +24,61 @@ from config.settings import (
 from src.storage import ensure_directories, save_text
 from src.discovery import discover_meeting_urls
 
+def process_direct_document(url: str) -> tuple[dict, list[dict], list[dict]]:
+    """Download a document URL supplied directly in urls.csv.
+
+    Direct document URLs do not have a webpage to scrape, so they bypass
+    Playwright and are added straight to the normal document-download results.
+    """
+    print(f"Processing direct document: {url}")
+
+    document_results = download_documents_from_links(
+        links=[url],
+        output_folder=DOCUMENT_OUTPUT_DIR,
+    )
+    document_rows = []
+
+    for doc in document_results:
+        document_rows.append({
+            "source_url": url,
+            "document_url": doc["url"],
+            "local_path": doc.get("local_path", ""),
+            "normalized_path": "",
+            "document_text_file": "",
+            "document_analysis_file": "",
+            "file_type": doc.get("file_type", ""),
+            "success": doc.get("success", False),
+            "error": doc.get("error", ""),
+            "analysis_status": "not_analyzed",
+            "character_count": 0,
+        })
+
+        if doc["success"]:
+            print(f"Document downloaded: {doc['url']}")
+        else:
+            print(f"Document download failed: {doc['url']} - {doc['error']}")
+
+    document_downloaded = bool(document_results and document_results[0]["success"])
+
+    return {
+        "url": url,
+        "status": "success" if document_downloaded else "failed",
+        "text_file": "",
+        "character_count": 0,
+        "transcript_status": "",
+        "transcript_file": "",
+        "analysis_status": "",
+        "analysis_file": "",
+        "analysis_character_count": 0,
+        "chunks_used": 0,
+    }, [], document_rows
+
+
 def process_url(url: str, download_audio: bool,) -> tuple[dict, list[dict], list[dict]]:
     print(f"Processing: {url}")
+
+    if is_downloadable_url(url):
+        return process_direct_document(url)
 
     html = fetch_html(url)    
 
@@ -79,6 +136,7 @@ def process_url(url: str, download_audio: bool,) -> tuple[dict, list[dict], list
             "error": doc.get("error", ""),
             "analysis_status": "not_analyzed",
             "character_count": 0,
+            "archive_path": doc.get("arcchive_path", ""),
         })
 
         if doc["success"]:

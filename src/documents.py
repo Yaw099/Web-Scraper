@@ -1,4 +1,4 @@
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from urllib.parse import urlparse, unquote
 from collections.abc import Callable
 import requests
@@ -10,7 +10,10 @@ import subprocess
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from pptx import Presentation
-
+from zipfile import BadZipFile, ZipFile
+from xml.etree import ElementTree as ET
+from posixpath import normpath
+from pptx.enum.shapes import MSO_SHAPE_TYPE
 
 DOCUMENT_EXTENSIONS = {
     ".pdf",
@@ -25,6 +28,16 @@ DOCUMENT_EXTENSIONS = {
     ".rtf",
 }
 
+ARCHIVE_EXTENSIONS = {
+    ".zip",
+}
+
+MAX_ARCHIVE_FILES = 1000
+
+MAX_ARCHIVE_UNCOMPRESSED_SIZE = (
+    1024 * 1024 * 1024
+)  # 1 GB
+
 def discover_document_links(html, base_url):
     soup = BeautifulSoup(html, "lxml")
     document_urls = []
@@ -32,7 +45,7 @@ def discover_document_links(html, base_url):
     for tag in soup.find_all("a", href=True):
         absolute_url = urljoin(base_url, tag["href"])
 
-        if is_document_url(absolute_url):
+        if is_downloadable_url(absolute_url):
             document_urls.append(absolute_url)
 
     return list(dict.fromkeys(document_urls))
@@ -108,9 +121,23 @@ def normalize_document(path):
 
     return converted_path
 
+def get_url_extension(url: str) -> str:
+    parsed = urlparse(url)
+    decoded_path = unquote(parsed.path)
+
+    return Path(decoded_path).suffix.lower()
+
+
 def is_document_url(url: str) -> bool:
-    path = urlparse(url).path.lower()
-    return Path(path).suffix in DOCUMENT_EXTENSIONS
+    return get_url_extension(url) in DOCUMENT_EXTENSIONS
+
+
+def is_archive_url(url: str) -> bool:
+    return get_url_extension(url) in ARCHIVE_EXTENSIONS
+
+
+def is_downloadable_url(url: str) -> bool:
+    return is_document_url(url) or is_archive_url(url)
 
 
 def download_document(url, output_folder):
@@ -160,6 +187,159 @@ def download_document(url, output_folder):
                 file.write(chunk)
 
     return local_path
+
+def is_supported_document_file(path):
+    path = Path(path)
+
+    return (
+        path.is_file()
+        and path.suffix.lower() in DOCUMENT_EXTENSIONS
+    )
+
+
+def is_ignored_archive_member(member_path):
+    parts = member_path.parts
+
+    if "__MACOSX" in parts:
+        return True
+
+    if member_path.name.startswith("._"):
+        return True
+
+    if member_path.name in {".DS_Store", "Thumbs.db"}:
+        return True
+
+    return False
+
+
+def validate_archive_member(member_name):
+    member_path = PurePosixPath(member_name)
+
+    if member_path.is_absolute():
+        raise ValueError(
+            f"Archive contains an absolute path: {member_name}"
+        )
+
+    if ".." in member_path.parts:
+        raise ValueError(
+            f"Archive contains an unsafe path: {member_name}"
+        )
+
+    return member_path
+
+
+def safe_extract_zip(zip_path, output_folder):
+    zip_path = Path(zip_path)
+    output_folder = Path(output_folder)
+
+    extraction_folder = output_folder / zip_path.stem
+    extraction_folder.mkdir(parents=True, exist_ok=True)
+
+    extraction_root = extraction_folder.resolve()
+
+    extracted_files = []
+    total_uncompressed_size = 0
+
+    try:
+        with ZipFile(zip_path, "r") as archive:
+            members = archive.infolist()
+
+            if len(members) > MAX_ARCHIVE_FILES:
+                raise ValueError(
+                    "Archive contains too many entries: "
+                    f"{len(members)}"
+                )
+
+            for member in members:
+                if member.is_dir():
+                    continue
+
+                member_path = validate_archive_member(
+                    member.filename
+                )
+
+                if is_ignored_archive_member(member_path):
+                    continue
+
+                total_uncompressed_size += member.file_size
+
+                if (
+                    total_uncompressed_size
+                    > MAX_ARCHIVE_UNCOMPRESSED_SIZE
+                ):
+                    raise ValueError(
+                        "Archive exceeds the maximum allowed "
+                        "uncompressed size."
+                    )
+
+                destination = (
+                    extraction_folder
+                    / Path(*member_path.parts)
+                )
+
+                resolved_destination = destination.resolve()
+
+                if (
+                    resolved_destination != extraction_root
+                    and extraction_root
+                    not in resolved_destination.parents
+                ):
+                    raise ValueError(
+                        "Archive member would be extracted "
+                        f"outside the target folder: "
+                        f"{member.filename}"
+                    )
+
+                destination.parent.mkdir(
+                    parents=True,
+                    exist_ok=True,
+                )
+
+                with archive.open(member, "r") as source:
+                    with destination.open("wb") as target:
+                        shutil.copyfileobj(source, target)
+
+                extracted_files.append(destination)
+
+    except BadZipFile as error:
+        raise ValueError(
+            f"Invalid or corrupted ZIP archive: {zip_path.name}"
+        ) from error
+
+    return extracted_files
+
+def prepare_downloaded_files(path, output_folder):
+    path = Path(path)
+    suffix = path.suffix.lower()
+
+    if suffix in DOCUMENT_EXTENSIONS:
+        return [path]
+
+    if suffix == ".zip":
+        extracted_files = safe_extract_zip(
+            path,
+            output_folder,
+        )
+
+        supported_files = [
+            extracted_file
+            for extracted_file in extracted_files
+            if is_supported_document_file(extracted_file)
+        ]
+
+        print(
+            f"Extracted {len(extracted_files)} file(s) "
+            f"from {path.name}"
+        )
+
+        print(
+            f"Found {len(supported_files)} supported "
+            "document file(s)"
+        )
+
+        return supported_files
+
+    return []
 
 
 def get_document_type(path):
@@ -223,29 +403,191 @@ def extract_docx(path):
 
     return "\n".join(output)
 
+DRAWINGML_NAMESPACE = (
+    "http://schemas.openxmlformats.org/drawingml/2006/main"
+)
+
+PACKAGE_RELATIONSHIP_NAMESPACE = (
+    "http://schemas.openxmlformats.org/package/2006/relationships"
+)
+
+DIAGRAM_DATA_RELATIONSHIP = (
+    "http://schemas.openxmlformats.org/"
+    "officeDocument/2006/relationships/diagramData"
+)
+
+def clean_pptx_text(text):
+    if not text:
+        return ""
+
+    text = text.replace("\x0b", "\n")
+    text = text.replace("\r", "\n")
+
+    cleaned_lines = []
+
+    for line in text.splitlines():
+        cleaned_line = " ".join(line.split())
+
+        if cleaned_line:
+            cleaned_lines.append(cleaned_line)
+
+    return "\n".join(cleaned_lines)
+
+
+def extract_pptx_shape_text(shape):
+    output = []
+
+    # Recursively inspect grouped shapes.
+    if shape.shape_type == MSO_SHAPE_TYPE.GROUP:
+        for child_shape in shape.shapes:
+            output.extend(extract_pptx_shape_text(child_shape))
+
+        return output
+
+    if getattr(shape, "has_text_frame", False):
+        text = clean_pptx_text(shape.text)
+
+        if text:
+            output.append(text)
+
+    if getattr(shape, "has_table", False):
+        table_output = ["--- Table ---"]
+
+        for row in shape.table.rows:
+            cells = [
+                clean_pptx_text(cell.text).replace("\n", " ")
+                for cell in row.cells
+            ]
+
+            table_output.append(" | ".join(cells))
+
+        output.append("\n".join(table_output))
+
+    return output
+
+def resolve_pptx_relationship_target(target):
+    normalized = normpath(f"ppt/slides/{target}")
+
+    # normpath uses forward slashes here because this is an archive path.
+    return normalized.lstrip("/")
+
+
+def extract_smartart_xml_text(archive, diagram_path):
+    try:
+        xml_content = archive.read(diagram_path)
+    except KeyError:
+        return []
+
+    root = ET.fromstring(xml_content)
+
+    text_tag = f"{{{DRAWINGML_NAMESPACE}}}t"
+    output = []
+
+    for element in root.iter(text_tag):
+        text = clean_pptx_text(element.text)
+
+        if text:
+            output.append(text)
+
+    return output
+
+
+def extract_slide_smartart_text(archive, slide_index):
+    relationships_path = (
+        f"ppt/slides/_rels/slide{slide_index}.xml.rels"
+    )
+
+    try:
+        relationships_content = archive.read(relationships_path)
+    except KeyError:
+        return []
+
+    root = ET.fromstring(relationships_content)
+
+    relationship_tag = (
+        f"{{{PACKAGE_RELATIONSHIP_NAMESPACE}}}Relationship"
+    )
+
+    output = []
+
+    for relationship in root.findall(relationship_tag):
+        relationship_type = relationship.get("Type", "")
+        target = relationship.get("Target", "")
+
+        if relationship_type != DIAGRAM_DATA_RELATIONSHIP:
+            continue
+
+        if not target:
+            continue
+
+        diagram_path = resolve_pptx_relationship_target(target)
+
+        output.extend(
+            extract_smartart_xml_text(
+                archive,
+                diagram_path,
+            )
+        )
+
+    return output
+
+def remove_duplicate_pptx_text(items):
+    output = []
+    seen = set()
+
+    for item in items:
+        normalized = " ".join(item.lower().split())
+
+        if not normalized:
+            continue
+
+        if normalized in seen:
+            continue
+
+        seen.add(normalized)
+        output.append(item)
+
+    return output
+
 def extract_pptx(path):
+    path = Path(path)
     presentation = Presentation(path)
 
     output = []
 
-    for slide_index, slide in enumerate(presentation.slides, start=1):
-        output.append(f"\n--- Slide {slide_index} ---")
+    with ZipFile(path, "r") as archive:
+        for slide_index, slide in enumerate(
+            presentation.slides,
+            start=1,
+        ):
+            output.append(f"\n--- Slide {slide_index} ---")
 
-        for shape in slide.shapes:
-            if hasattr(shape, "text"):
-                text = shape.text.strip()
-                if text:
-                    output.append(text)
+            slide_output = []
 
-            if shape.has_table:
-                output.append("--- Table ---")
+            # Normal text boxes, placeholders, grouped shapes, and tables.
+            for shape in slide.shapes:
+                slide_output.extend(
+                    extract_pptx_shape_text(shape)
+                )
 
-                for row in shape.table.rows:
-                    cells = [
-                        cell.text.strip().replace("\n", " ")
-                        for cell in row.cells
-                    ]
-                    output.append(" | ".join(cells))
+            # SmartArt text stored in the internal PPTX XML.
+            smartart_text = extract_slide_smartart_text(
+                archive,
+                slide_index,
+            )
+
+            if smartart_text:
+                slide_output.append("--- SmartArt ---")
+                slide_output.extend(smartart_text)
+
+            slide_output = remove_duplicate_pptx_text(
+                slide_output
+            )
+
+            if slide_output:
+                output.extend(slide_output)
+            else:
+                output.append("[No extractable text found]")
 
     return "\n".join(output)
 
@@ -292,20 +634,52 @@ def extract_text(path):
     return extractor(path)
     
 
-def process_documents_from_links(links, output_folder):
+def process_documents_from_links(
+    links,
+    output_folder,
+):
+    download_results = download_documents_from_links(
+        links,
+        output_folder,
+    )
+
     results = []
 
-    for link in links:
-        url = link.get("url") if isinstance(link, dict) else link
-
-        if not url:
+    for download_result in download_results:
+        if not download_result["success"]:
+            results.append(download_result)
             continue
 
-        if not is_document_url(url):
-            continue
+        local_path = download_result["local_path"]
 
-        result = process_document(url, output_folder)
-        results.append(result)
+        try:
+            processed = process_downloaded_document_file(
+                local_path
+            )
+
+            processed["url"] = download_result["url"]
+            processed["archive_path"] = (
+                download_result.get("archive_path", "")
+            )
+
+            results.append(processed)
+
+        except Exception as error:
+            results.append({
+                "url": download_result["url"],
+                "local_path": local_path,
+                "normalized_path": "",
+                "file_type": get_document_type(
+                    local_path
+                ),
+                "text": "",
+                "success": False,
+                "error": str(error),
+                "archive_path": download_result.get(
+                    "archive_path",
+                    "",
+                ),
+            })
 
     return results
 
@@ -349,27 +723,69 @@ def process_downloaded_document_file(path):
         "error": None,
     }
 
-def download_documents_from_links(links, output_folder):
+def download_documents_from_links(
+    links,
+    output_folder,
+):
     results = []
 
     for link in links:
         url = link.get("url") if isinstance(link, dict) else link
 
-        if not url or not is_document_url(url):
+        if not url or not is_downloadable_url(url):
             continue
 
         try:
-            local_file = download_document(url, output_folder)
+            downloaded_file = download_document(
+                url,
+                output_folder,
+            )
 
-            results.append({
-                "url": url,
-                "local_path": str(local_file),
-                "normalized_path": "",
-                "file_type": get_document_type(local_file),
-                "text": "",
-                "success": True,
-                "error": None,
-            })
+            prepared_files = prepare_downloaded_files(
+                downloaded_file,
+                output_folder,
+            )
+
+            if not prepared_files:
+                results.append({
+                    "url": url,
+                    "local_path": str(downloaded_file),
+                    "normalized_path": "",
+                    "file_type": get_document_type(
+                        downloaded_file
+                    ),
+                    "text": "",
+                    "success": False,
+                    "error": (
+                        "No supported documents were found "
+                        "in the downloaded file."
+                    ),
+                    "archive_path": (
+                        str(downloaded_file)
+                        if is_archive_url(url)
+                        else ""
+                    ),
+                })
+
+                continue
+
+            for prepared_file in prepared_files:
+                results.append({
+                    "url": url,
+                    "local_path": str(prepared_file),
+                    "normalized_path": "",
+                    "file_type": get_document_type(
+                        prepared_file
+                    ),
+                    "text": "",
+                    "success": True,
+                    "error": None,
+                    "archive_path": (
+                        str(downloaded_file)
+                        if is_archive_url(url)
+                        else ""
+                    ),
+                })
 
         except Exception as error:
             results.append({
@@ -380,6 +796,7 @@ def download_documents_from_links(links, output_folder):
                 "text": "",
                 "success": False,
                 "error": str(error),
+                "archive_path": "",
             })
 
     return results

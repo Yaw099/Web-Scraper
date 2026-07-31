@@ -377,6 +377,11 @@ class ScraperGUI:
     def run_extract_document_text(self):
         from src.storage import save_text
         from config.settings import DOCUMENT_OUTPUT_DIR, DOCUMENT_TEXT_OUTPUT_DIR
+        from src.documents import (
+            DOCUMENT_EXTENSIONS,
+            normalize_document,
+            extract_text,
+        )
 
         document_folder = Path(DOCUMENT_OUTPUT_DIR)
         text_folder = Path(DOCUMENT_TEXT_OUTPUT_DIR)
@@ -388,10 +393,10 @@ class ScraperGUI:
             return
 
         files = [
-            path for path in document_folder.iterdir()
-            if path.is_file() and path.suffix.lower() in {
-                ".pdf", ".doc", ".docx", ".ppt", ".pptx", ".txt", ".xls", ".xlsx", ".csv", ".rtf"
-            }
+            path
+            for path in document_folder.rglob("*")
+            if path.is_file()
+            and path.suffix.lower() in DOCUMENT_EXTENSIONS
         ]
 
         if not files:
@@ -404,8 +409,6 @@ class ScraperGUI:
             try:
                 self.log(f"Extracting {index} of {len(files)}: {path.name}")
 
-                # Use file path as a fake URL source name for save_text
-                from src.documents import normalize_document, extract_text
 
                 normalized_path = normalize_document(path)
                 text = extract_text(normalized_path)
