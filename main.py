@@ -8,6 +8,7 @@ from src.documents import (
     discover_document_links,
     download_documents_from_links,
     is_downloadable_url,
+    normalize_url_for_dedup,
 )
 from config.settings import (
     DOWNLOAD_AUDIO,
@@ -136,7 +137,7 @@ def process_url(url: str, download_audio: bool,) -> tuple[dict, list[dict], list
             "error": doc.get("error", ""),
             "analysis_status": "not_analyzed",
             "character_count": 0,
-            "archive_path": doc.get("arcchive_path", ""),
+            "archive_path": doc.get("archive_path", ""),
         })
 
         if doc["success"]:
@@ -203,6 +204,7 @@ def main(
     results = []
     all_discovered_meetings = []
     all_document_rows = []
+    seen_input_urls = set()
 
     for _, row in urls.iterrows():
         url_value = row["url"]
@@ -220,6 +222,14 @@ def main(
         if not url:
             print("Skipping blank or invalid URL.")
             continue
+
+        url_key = normalize_url_for_dedup(url)
+
+        if url_key in seen_input_urls:
+            print(f"Skipping duplicate input URL: {url}")
+            continue
+
+        seen_input_urls.add(url_key)
 
         try:
             pipeline_result, discovered_rows, document_rows = process_url(
@@ -258,3 +268,27 @@ def main(
 
 if __name__ == "__main__":
     main()
+
+
+# https://www.ercot.com/committees/ros/dwg
+# https://www.puc.texas.gov/agency/calendar/openmeetings/
+# https://www.ercot.com/committees/rms/tdtms
+# https://www.ercot.com/committees/prs
+# https://www.ercot.com/committees/tac/llwg
+# https://www.ercot.com/mktrules/issues/PGRR145
+# https://www.ercot.com/mktrules/issues/NPRR1325
+# https://www.adminmonitor.com/tx/puct/open_meeting/20260326/
+# https://www.adminmonitor.com/tx/puct/open_meeting/20260402/
+
+
+# https://spp.org/news-list/southwest-power-pool-board-approves-accelerated-pathway-for-large-load-connection/
+# https://spp.org/Documents/74204/RR696.zip
+# https://spp.org/Documents/74189/large%20load%20stakeholder%20engagement%20forum%20meeting%20materials%2020250701.zip
+# https://spp.org/markets-operations/high-impact-large-load-hill-integration/
+# https://spp.org/Documents/75365/one%20pager%20-%20high%20impact%20large%20load%20process.docx
+# https://spp.org/Documents/75366/One%20Pager%20-%20SPP%20High%20Impact%20Large%20Load%20Generator%20Assessment.docx
+# https://spp.org/spp-documents-filings/?id=540504https://spp.org/spp-documents-filings/?id=540504
+# https://spp.org/spp-documents-filings/?id=540500
+# https://spp.org/spp-documents-filings/?id=540506
+# "https://spp.org/Documents/75698/20260112%20CHILLS%20and%20PALS%20Stakeholder%20Engagement%20Forum,%20Presentation.pptx"
+# "https://spp.org/Documents/75348/20251121%20CHILLS%20Stakeholder%20Engagement%20Forum,%20Presentation.pptx"

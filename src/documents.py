@@ -1,6 +1,16 @@
 from pathlib import Path, PurePosixPath
-from urllib.parse import urlparse, unquote
+from urllib.parse import (
+    parse_qsl,
+    quote,
+    unquote,
+    urlencode,
+    urljoin,
+    urlparse,
+    urlsplit,
+    urlunsplit,
+)
 from collections.abc import Callable
+from hashlib import sha256
 import requests
 import pandas as pd
 from pypdf import PdfReader
@@ -8,7 +18,6 @@ from docx import Document
 import shutil
 import subprocess
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin
 from pptx import Presentation
 from zipfile import BadZipFile, ZipFile
 from xml.etree import ElementTree as ET
@@ -41,14 +50,57 @@ MAX_ARCHIVE_UNCOMPRESSED_SIZE = (
 def discover_document_links(html, base_url):
     soup = BeautifulSoup(html, "lxml")
     document_urls = []
+    seen_urls = set()
 
     for tag in soup.find_all("a", href=True):
         absolute_url = urljoin(base_url, tag["href"])
 
-        if is_downloadable_url(absolute_url):
-            document_urls.append(absolute_url)
+        if not is_downloadable_url(absolute_url):
+            continue
 
-    return list(dict.fromkeys(document_urls))
+        url_key = normalize_url_for_dedup(absolute_url)
+
+        if url_key in seen_urls:
+            continue
+
+        seen_urls.add(url_key)
+        document_urls.append(absolute_url)
+
+    return document_urls
+
+
+def normalize_url_for_dedup(url: str) -> str:
+    """Return a stable comparison key without changing the requested URL."""
+
+    parts = urlsplit(str(url).strip())
+    normalized_path = quote(
+        unquote(parts.path),
+        safe="/:@!$&'()*+,;=-._~",
+    )
+    normalized_query = urlencode(
+        sorted(parse_qsl(parts.query, keep_blank_values=True)),
+        doseq=True,
+    )
+
+    return urlunsplit((
+        parts.scheme.lower(),
+        parts.netloc.lower(),
+        normalized_path,
+        normalized_query,
+        "",
+    ))
+
+
+def file_sha256(path, block_size=1024 * 1024):
+    """Hash a file incrementally so identical downloads can be reused."""
+
+    digest = sha256()
+
+    with Path(path).open("rb") as file:
+        for block in iter(lambda: file.read(block_size), b""):
+            digest.update(block)
+
+    return digest.hexdigest()
 
 def find_libreoffice():
     # First check PATH
@@ -294,6 +346,13 @@ def safe_extract_zip(zip_path, output_folder):
                     parents=True,
                     exist_ok=True,
                 )
+
+                if (
+                    destination.exists()
+                    and destination.stat().st_size == member.file_size
+                ):
+                    extracted_files.append(destination)
+                    continue
 
                 with archive.open(member, "r") as source:
                     with destination.open("wb") as target:
@@ -728,12 +787,20 @@ def download_documents_from_links(
     output_folder,
 ):
     results = []
+    seen_urls = set()
 
     for link in links:
         url = link.get("url") if isinstance(link, dict) else link
 
         if not url or not is_downloadable_url(url):
             continue
+
+        url_key = normalize_url_for_dedup(url)
+
+        if url_key in seen_urls:
+            continue
+
+        seen_urls.add(url_key)
 
         try:
             downloaded_file = download_document(
